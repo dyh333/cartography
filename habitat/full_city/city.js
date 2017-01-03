@@ -4,9 +4,11 @@ var w = window.innerWidth;
 var h = window.innerHeight;
 var scene, camera, renderer, mesh, group;
 
+ var lat, lng;
+
 //PARIS
-var lat = 48.8534100;
-var lng =  2.3488000;
+// lat = 48.8534100;
+// lng =  2.3488000;
 
 //LONDON
 //lat = 51.5085300;
@@ -21,8 +23,13 @@ var lng =  2.3488000;
 //lng = -74.0059700;
 
 //SAN FRANCISCO
-lat = 37.773972;
-lng = -122.431297;
+// lat = 37.773972;
+// lng = -122.431297;
+
+//SUZHOU
+lat = 31.327620;
+lng = 120.715971;
+
 var zl = 13;
 
 var start = 0;
@@ -47,9 +54,15 @@ window.onload = function() {
 
     var xy = map.mercator.latLonToMeters( -lat, lng, map.zoom);
 
-    camera.position.x = -13640768.438104622;
+    
+    // camera.position.x = -13640768.438104622;
+    // camera.position.y = 14615.668647974027;
+    // camera.position.z = -4528503.340282675;
+    //dingyh: 
+    camera.position.x = xy[0];
     camera.position.y = 14615.668647974027;
-    camera.position.z = -4528503.340282675;
+    camera.position.z = xy[1];
+
     controls.target.x = xy[0];
     controls.target.z = xy[1];
     camera.lookAt( controls.target );
@@ -67,26 +80,38 @@ window.onload = function() {
          //controls.target.set( -13627973.806908408, 1040.3513288190197, -4547575.779487265 );
          //controls.update();
          ///*
-        if( skybox.mesh ){
-            skybox.mesh.position.x = xy[0];
-            skybox.mesh.position.z = xy[1];
-            scene.add( skybox.mesh );
-        }
+         
+        //dingyh 
+        // if( skybox.mesh ){
+        //     skybox.mesh.position.x = xy[0];
+        //     skybox.mesh.position.z = xy[1];
+        //     scene.add( skybox.mesh );
+        // }
 
         materials.init( skybox.cubeMap );
 
         builder.init( scene );
-        water.init( function(){
+        //dingyh
+        // water.init( function(){
 
-             land.init( scene, size, xy, function(){
+        //      land.init( scene, size, xy, function(){
 
-                 map.init( size, true );
+        //          map.init( size, true );
 
-                 map.eventEmitter.on( Map.ON_LOAD_COMPLETE, loadTaxis );
+        //          map.eventEmitter.on( Map.ON_LOAD_COMPLETE, loadTaxis );
 
-                 map.setView( lat, lng, zl );
+        //          map.setView( lat, lng, zl );
 
-             });
+        //      });
+        // });
+        land.init( scene, size, xy, function(){
+
+            map.init( size, true );
+
+            map.eventEmitter.on( Map.ON_LOAD_COMPLETE, loadTaxis );
+
+            map.setView( lat, lng, zl );
+
         });
 
     } );
@@ -99,6 +124,7 @@ window.onload = function() {
 function loadTaxis( status ){
     if(status==0 ){
         map.eventEmitter.removeListener( Map.ON_LOAD_COMPLETE, loadTaxis );
+        //dingyh: load taxis data
         taxis.init( scene, camera );
     }
 }

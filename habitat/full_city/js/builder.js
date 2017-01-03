@@ -21,8 +21,10 @@ var builder = function(exports){
 
 
             if( type != "water" && type != "extra_land" ){
-
-                var uid = feat.id.toString();// || feat.properties.id.toString() || feat.properties.FID.toString();
+                //dingyh
+                // var uid = feat.id.toString();// || feat.properties.id.toString() || feat.properties.FID.toString();
+                 var uid = feat.properties.id.toString() || feat.properties.FID.toString();
+                
                 //this feature is a single point (street names mostly)
                 if( !isNaN( feat.geometry.coordinates[0] ) ) {
                     //console.log(feat);
@@ -48,8 +50,13 @@ var builder = function(exports){
             var edges = [];
             var vertices = [];
 
-            feat.geometry.coordinates.forEach( function( coords, j ){
+            var index=0;
 
+            //dingyh TODO
+            feat.geometry.coordinates.forEach( function( coords, j ){
+                var firstCoordIndex = index;
+
+                //TODO: 只考虑了第一个coords
                 //use only the first shape
                 if( j > 0 && type != "water" )return;
 
@@ -63,6 +70,7 @@ var builder = function(exports){
                     var lng = cs[0];
                     var lat = cs[1];
 
+                    // !!! 
                     var xy = map.mercator.latLonToMeters( -lat, lng, map.zoom);
                     if( isNaN( xy[0] ) || isNaN( xy[1]))
                     {
@@ -72,14 +80,22 @@ var builder = function(exports){
                     vertices.push( xy );
 
                     //edges
-                    edges.push( [ i, ( i+1 ) % max ] );
+                    // dingyh
+                    // edges.push( [ i, ( i+1 ) % max ] );
+                    if(i < max - 1){
+                        edges.push( [ index, ( index+1 ) ] );
+                    } else {
+                        edges.push( [ index, firstCoordIndex ] );
+                    }
 
+                    index++;
                 });
 
             });
 
             if( !valid ) return;
 
+            // !!! 这里是为了构造点和边，方便后续用德劳内三角剖分 ???
             //stores this feature's data
             bufferVertices.push( vertices );
             bufferEdges.push( edges );
@@ -93,8 +109,10 @@ var builder = function(exports){
             }else if( type == "water" ){
                 height = 2;
             }else{
-                height = ( 10 + Math.random() * 100 );
-                height = Math.random()>.99 ? height*2 : height;
+                // dingyh: 用真实的高度属性
+                height = parseFloat(feat.properties.height);
+                // height = ( 10 + Math.random() * 100 );
+                // height = Math.random()>.99 ? height*2 : height;
             }
             bufferHeights.push( height );
 

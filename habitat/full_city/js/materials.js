@@ -36,7 +36,8 @@ var materials = function( exports ){
 
             color:0x666666,
             emissive:0x000000,
-            envMap:cubeMap,
+            //dingyh
+            // envMap:cubeMap,
             reflectivity:1.5,
             refractionRatio:.5,
             shininess:20,

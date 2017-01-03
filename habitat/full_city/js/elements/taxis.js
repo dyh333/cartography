@@ -10,62 +10,7 @@ var taxis = function( exports ){
     var tg = new THREE.Vector3();
 
     var taxis = [
-        '../../taxi/cabspottingdata/new_enyenewl.txt',
-        '../../taxi/cabspottingdata/new_ockoac.txt',
-        '../../taxi/cabspottingdata/new_ikdagcy.txt',
-        '../../taxi/cabspottingdata/new_ayshekki.txt',
-        '../../taxi/cabspottingdata/new_ancorjo.txt',
-        '../../taxi/cabspottingdata/new_idvowwed.txt',
-        '../../taxi/cabspottingdata/new_iatmeuns.txt',
-        '../../taxi/cabspottingdata/new_unwrain.txt',
-        '../../taxi/cabspottingdata/new_atsfiv.txt',
-        '../../taxi/cabspottingdata/new_aupclik.txt',
-        /*
-        '../../taxi/cabspottingdata/new_afmorc.txt',
-        '../../taxi/cabspottingdata/new_ochotcil.txt',
-        '../../taxi/cabspottingdata/new_enkkand.txt',
-        '../../taxi/cabspottingdata/new_amwibs.txt',
-        '../../taxi/cabspottingdata/new_ibflsruc.txt',
-        '../../taxi/cabspottingdata/new_esnddceb.txt',
-        '../../taxi/cabspottingdata/new_objoyhi.txt',
-        '../../taxi/cabspottingdata/new_amciuca.txt',
-        '../../taxi/cabspottingdata/new_okblahed.txt',
-        '../../taxi/cabspottingdata/new_arlwras.txt',
-        //*/
-        ///*
-         '../../taxi/cabspottingdata/new_afpansh.txt',
-         '../../taxi/cabspottingdata/new_oadwowd.txt',
-         '../../taxi/cabspottingdata/new_arcuim.txt',
-         '../../taxi/cabspottingdata/new_uggdye.txt',
-         '../../taxi/cabspottingdata/new_atfrim.txt',
-         //*/
-         /*
-         '../../taxi/cabspottingdata/new_edomboys.txt',
-         '../../taxi/cabspottingdata/new_egnatab.txt',
-         '../../taxi/cabspottingdata/new_oxdoghic.txt',
-         '../../taxi/cabspottingdata/new_onwohyss.txt',
-         '../../taxi/cabspottingdata/new_edjiye.txt',
-         '../../taxi/cabspottingdata/new_osoccef.txt',
-         '../../taxi/cabspottingdata/new_ifelas.txt',
-         '../../taxi/cabspottingdata/new_imwrytsy.txt',
-         '../../taxi/cabspottingdata/new_owbsuscs.txt',
-         '../../taxi/cabspottingdata/new_ockihoba.txt',
-         '../../taxi/cabspottingdata/new_aichash.txt',
-         '../../taxi/cabspottingdata/new_epabcadu.txt',
-         '../../taxi/cabspottingdata/new_orkbats.txt',
-         '../../taxi/cabspottingdata/new_eitpem.txt',
-         '../../taxi/cabspottingdata/new_eccest.txt',
-         '../../taxi/cabspottingdata/new_iawxben.txt',
-         '../../taxi/cabspottingdata/new_ecjeody.txt',
-         '../../taxi/cabspottingdata/new_ofodwo.txt',
-         '../../taxi/cabspottingdata/new_iapberci.txt',
-         '../../taxi/cabspottingdata/new_oocsodpl.txt',
-         '../../taxi/cabspottingdata/new_itquirla.txt',
-         '../../taxi/cabspottingdata/new_adnerst.txt',
-         '../../taxi/cabspottingdata/new_eenjoug.txt',
-         '../../taxi/cabspottingdata/new_okquakar.txt',
-         '../../taxi/cabspottingdata/new_ippfeip.txt'
-         //*/
+        '../../taxi/cabspottingdata/20160328_120.txt'
     ];
     exports.init = function( group, camera ){
 
@@ -139,6 +84,7 @@ var taxis = function( exports ){
                 taxi.open( "GET", taxis.shift() );
                 taxi.send();
             }else{
+                //dingyh: 做啥用？？？
                 taxiTime.sort(function( a,b){return Math.random() < .5 ? - 1 : 1; });
             }
 

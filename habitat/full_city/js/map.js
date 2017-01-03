@@ -7,6 +7,8 @@ var map = function(exports){
 
         map.setSize( size, size );
         map.render = false;//not rendering to canvas
+
+        //TODO: 可以加载瓦片底图???
         map.loadTiles = false;//will not load the images
 
         map.eventEmitter.on( Map.ON_TILE_LOADED, function( t ){
@@ -17,6 +19,7 @@ var map = function(exports){
             var y = t.ty;
             var z = map.zoom;
 
+            /* dingyh
             //check if we have a local copy
             var checkBuilding = new XMLHttpRequest();
             checkBuilding.onload = function(check){
@@ -115,9 +118,76 @@ var map = function(exports){
             };
             checkLandUse.open( "GET", 'fileExist.php?url=data/vectiles-land-usages/'+z+'/'+x+'/'+y+'.json' );
             checkLandUse.send();
+            */
+
+            //dingyh: use latLngBounds
+            var minX = t.latLngBounds[1];
+            var minY = t.latLngBounds[0];
+            var maxX = t.latLngBounds[3];
+            var maxY = t.latLngBounds[2];
+
+            //加载建筑数据
+            var buildings = new XMLHttpRequest();
+            buildings.onload = function(e) {
+                if (buildings.readyState === 4) {
+                    if (buildings.status === 200) {
+
+                        if( e.target.responseText == '' ){
+                            console.log( "empty JSON", url );
+                            return
+                        }
+                        var json = JSON.parse(e.target.responseText );
+                        builder.buildBlocks( t, "buildings", json );
+                    }else{
+                        console.log("error loading buildings");
+                    }
+                }
+            };
+            buildings.open( "GET", 'http://192.168.34.181/nancy_server/getBuildsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            buildings.send();
+
+            //加载水系数据
+            var water = new XMLHttpRequest();
+            water.onload = function(e) {
+               if (water.readyState === 4) {
+                   if (water.status === 200) {
+            
+                       if( e.target.responseText == '' ){
+                           console.log( "empty JSON", url );
+                           return
+                       }
+                       var json = JSON.parse(e.target.responseText );
+                       builder.buildBlocks( null, "water", json );
+                   }else{
+                       console.log("error loading water");
+                   }
+               }
+            };         
+            water.open( "GET", 'http://192.168.34.181/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            water.send();
+
+            //加载绿地数据
+            // var greenlands = new XMLHttpRequest();
+            // greenlands.onload = function(e) {
+            //     if (greenlands.readyState === 4) {
+            //         if (greenlands.status === 200) {
+
+            //             if( e.target.responseText == '' ){
+            //                 console.log( "empty JSON", url );
+            //                 return
+            //             }
+            //             var json = JSON.parse(e.target.responseText );
+            //             builder.buildBlocks( t, "landuse", json );
+            //         }else{
+            //             console.log("error loading greenlands");
+            //         }
+            //     }
+            // };
+
+            // greenlands.open( "GET", 'http://192.168.84.55/zcglserver/getGreenLandsTest/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            // greenlands.send();
 
         });
-
     };
     return map;
 }();

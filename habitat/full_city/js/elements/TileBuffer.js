@@ -28,7 +28,7 @@ var TileBuffer = function() {
         var uvInc = 0;
         bufferVertices.forEach( function( points, k ){
 
-
+            //dingyh: 只有水系有用
             //uvs bounds
             if( processUvs ){
                 var uvbounds =  new THREE.Vector4(0,0,1,1);
@@ -47,6 +47,7 @@ var TileBuffer = function() {
                 vertices[vertexInc++] = i >= points.length ? bufferHeights[ k ] : 0;//uses the extrusion height
                 vertices[vertexInc++] = p[1];
 
+                //dingyh: 只有水系有用
                 //check uv min / max
                 if( processUvs ){
                     min.x = Math.min( p[0], min.x );
@@ -56,9 +57,11 @@ var TileBuffer = function() {
                 }
             }
 
+            //dingyh: 只有水系有用
             //map uvs to uvBounds
             if( processUvs ){
                 for( i = 0; i < points.length * 2; i++){
+                    //dingyh 没看懂
                     p = points[ i % points.length ];
                     uvs[ uvInc++ ] = uvbounds.x + ( ( p[0] - min.x ) / ( max.x - min.x ) ) * uvbounds.z;
                     uvs[ uvInc++ ] = uvbounds.y + ( ( p[1] - min.y ) / ( max.y - min.y ) ) * uvbounds.w;
@@ -67,6 +70,8 @@ var TileBuffer = function() {
 
             //retrieves edges corresponding to this vertices set
             var edges = bufferEdges[k];
+
+
 
             //tesselation: top
             var result = cdt2d( points, edges, {exterior: false} );
