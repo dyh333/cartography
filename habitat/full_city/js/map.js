@@ -163,28 +163,28 @@ var map = function(exports){
                    }
                }
             };         
-            water.open( "GET", 'http://192.168.34.181/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            water.open( "GET", 'http://192.168.34.181/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );//
             water.send();
 
             //加载绿地数据
-            // var greenlands = new XMLHttpRequest();
-            // greenlands.onload = function(e) {
-            //     if (greenlands.readyState === 4) {
-            //         if (greenlands.status === 200) {
+            var greenlands = new XMLHttpRequest();
+            greenlands.onload = function(e) {
+                if (greenlands.readyState === 4) {
+                    if (greenlands.status === 200) {
 
-            //             if( e.target.responseText == '' ){
-            //                 console.log( "empty JSON", url );
-            //                 return
-            //             }
-            //             var json = JSON.parse(e.target.responseText );
-            //             builder.buildBlocks( t, "landuse", json );
-            //         }else{
-            //             console.log("error loading greenlands");
-            //         }
-            //     }
-            // };
+                        if( e.target.responseText == '' ){
+                            console.log( "empty JSON", url );
+                            return
+                        }
+                        var json = JSON.parse(e.target.responseText );
+                        builder.buildBlocks( t, "landuse", json );
+                    }else{
+                        console.log("error loading greenlands");
+                    }
+                }
+            };
 
-            // greenlands.open( "GET", 'http://192.168.84.55/zcglserver/getGreenLandsTest/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            // greenlands.open( "GET", 'http://192.168.34.181/nancy_server/getGreenlandsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // greenlands.send();
 
         });

@@ -10,8 +10,13 @@ var taxis = function( exports ){
     var tg = new THREE.Vector3();
 
     var taxis = [
-        '../../taxi/cabspottingdata/20160328_120.txt'
+        '../../taxi/busgpsdata/20161212_100.txt'
     ];
+
+    var path = '../../taxi/busgpsdata/';
+    var date = '20161212_';
+    var buslines = ['100', '1001', '106', '110', '111', '115', '116', '117', '120', '127', '128', '129', '130', '137', '138', '139', '141', '146', '148', '150', '156', '158', '16', '160', '162', '168', '170', '175', '176', '177', '179', '18', '180', '181', '182', '183', '185', '190', '2', '205', '206', '207', '208', '209', '215', '228', '238', '256', '258', '28', '307', '6', '高峰2号', '津梁街专线', '快线2号', '宋庄路专线', '斜塘专线', '重元寺专线'];
+
     exports.init = function( group, camera ){
 
         exports.taxiCamera = camera.clone();//new THREE.PerspectiveCamera( 40, camera.aspect, .1, 10000000 );
@@ -23,7 +28,7 @@ var taxis = function( exports ){
             var geom = new THREE.Geometry();
 
             var vertices = e.target.responseText.split( '\n' ).map(function( s, i ) {
-                var ll = s.split(' ');
+                var ll = s.split('\t');
                 ll = [parseFloat(ll[0]), parseFloat(ll[1])];
 
                 var xy = map.mercator.latLonToMeters( -ll[0], ll[1], map.zoom);
@@ -65,7 +70,9 @@ var taxis = function( exports ){
 
             //var col  ="#" + ( 0xFF<<16| ~~( ( ( tot-taxis.length ) / tot ) * 0xAA ) << 8 | 0 ).toString( 16 );
 
-            var col  = ~~( ( ( tot-taxis.length ) / tot ) *  60 );
+            //dingyh
+            // var col  = ~~( ( ( tot-taxis.length ) / tot ) *  60 );
+            var col = 60;
             var taxiMaterial = new THREE.LineBasicMaterial( {
                 color:new THREE.Color( "hsl("+ col +", 100%, 50%)" ),
                 blending:THREE.AdditiveBlending,
@@ -81,7 +88,10 @@ var taxis = function( exports ){
             taxiTime.push( taxis.length / tot );
 
             if( taxis.length > 0 ){
-                taxi.open( "GET", taxis.shift() );
+                //dingyh
+                // taxi.open( "GET", taxis.shift() );
+                var file = path + date + buslines.shift() + '.txt';
+                taxi.open( "GET", file);
                 taxi.send();
             }else{
                 //dingyh: 做啥用？？？
@@ -91,7 +101,10 @@ var taxis = function( exports ){
             renderTaxi = true;
         };
 
-        taxi.open( "GET", taxis.shift() );
+        //dingyh
+        // taxi.open( "GET", taxis.shift() );
+        var file = path + date + buslines.shift() + '.txt';
+        taxi.open( "GET", file);
         taxi.send();
     };
 

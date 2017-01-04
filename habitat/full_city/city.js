@@ -126,11 +126,13 @@ function loadTaxis( status ){
         map.eventEmitter.removeListener( Map.ON_LOAD_COMPLETE, loadTaxis );
         //dingyh: load taxis data
         taxis.init( scene, camera );
+
+        //dingyh load bus stations
+        // busStations.init(scene, camera);
     }
 }
 
-window.onresize = function()
-{
+window.onresize = function(){
     w = window.innerWidth;
     h = window.innerHeight;
     renderer.setSize( w,h );
@@ -152,6 +154,8 @@ function update(){
 
     materials.update();
     taxis.update();
+    //dingyh
+    busStations.update();
 
     if(dinoLoaded)dino.update();
     if( driveTaxi )

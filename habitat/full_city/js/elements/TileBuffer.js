@@ -188,7 +188,7 @@ var TileBuffer = function() {
         geom.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
         geom.addAttribute( 'normal', new THREE.BufferAttribute( normals, 3 ) );
         if( processUvs ){
-            console.log( "processUvs" );
+            // console.log( "processUvs" );
             geom.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
         }
         THREE.Mesh.call( this, geom, material );
