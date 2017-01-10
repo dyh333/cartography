@@ -192,7 +192,6 @@ var TileBuffer = function() {
             geom.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
         }
         THREE.Mesh.call( this, geom, material );
-
     }
 
     var _p = TileBuffer.prototype = Object.create( THREE.Mesh.prototype );

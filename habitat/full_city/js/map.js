@@ -1,8 +1,7 @@
 var map = function(exports){
 
-
     var id = 0;
-    var map = new Map( '', null, 256,256, 0, 18 );
+    var map = new Map( '', null, 256, 256, 0, 18 );
     map.init = function( size, load ){
 
         map.setSize( size, size );
@@ -122,9 +121,9 @@ var map = function(exports){
 
             //dingyh: use latLngBounds
             var minX = t.latLngBounds[1];
-            var minY = t.latLngBounds[0];
+            var minY = t.latLngBounds[2];
             var maxX = t.latLngBounds[3];
-            var maxY = t.latLngBounds[2];
+            var maxY = t.latLngBounds[0];
 
             //加载建筑数据
             var buildings = new XMLHttpRequest();
@@ -137,14 +136,18 @@ var map = function(exports){
                             return
                         }
                         var json = JSON.parse(e.target.responseText );
-                        builder.buildBlocks( t, "buildings", json );
+
+                        if(json.features.length > 0){
+                            builder.buildBlocks( t, "buildings", json );
+                        } 
                     }else{
                         console.log("error loading buildings");
                     }
                 }
             };
-            buildings.open( "GET", 'http://192.168.34.181/nancy_server/getBuildsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
-            buildings.send();
+            // buildings.open( "GET", 'http://192.168.34.181/nancy_server/getBuildsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            // buildings.open( "GET", 'http://localhost/NancyServer/getBuildsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            // buildings.send();
 
             //加载水系数据
             var water = new XMLHttpRequest();
@@ -163,8 +166,9 @@ var map = function(exports){
                    }
                }
             };         
-            water.open( "GET", 'http://192.168.34.181/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );//
-            water.send();
+            // water.open( "GET", 'http://192.168.34.181/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            // water.open( "GET", 'http://localhost/NancyServer/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            // water.send();
 
             //加载绿地数据
             var greenlands = new XMLHttpRequest();

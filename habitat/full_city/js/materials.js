@@ -4,7 +4,6 @@ var materials = function( exports ){
     var waterNormal;
     exports.init = function( cubeMap ){
 
-
         exports[ "water" ] =new THREE.MeshPhongMaterial({
 
             color:0x444444,
@@ -32,17 +31,16 @@ var materials = function( exports ){
 
         });
 
+        //dingyh
         exports[ "buildings" ] =new THREE.MeshPhongMaterial({
 
             color:0x666666,
-            emissive:0x000000,
-            //dingyh
-            envMap:cubeMap,
+            emissive:0x000000,            
+            // envMap:cubeMap,
             reflectivity:1.5,
             refractionRatio:.5,
             shininess:20,
             shading:THREE.FlatShading
-
         });
 
         exports[ "landuse" ] = new THREE.MeshPhongMaterial({

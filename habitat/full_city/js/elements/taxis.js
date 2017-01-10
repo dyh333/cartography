@@ -77,7 +77,7 @@ var taxis = function( exports ){
                 color:new THREE.Color( "hsl("+ col +", 100%, 50%)" ),
                 blending:THREE.AdditiveBlending,
                 transparent:true,
-                opacity:.05
+                opacity: .05
             } );
 
             var m = new THREE.Line( geom, taxiMaterial );
@@ -87,9 +87,11 @@ var taxis = function( exports ){
             taxiMaterials.push(taxiMaterial);
             taxiTime.push( taxis.length / tot );
 
-            if( taxis.length > 0 ){
-                //dingyh
-                // taxi.open( "GET", taxis.shift() );
+            //dingyh
+            // if( taxis.length > 0 ){
+            //     taxi.open( "GET", taxis.shift() );
+            //     taxi.send();
+            if( buslines.length > 0 ){
                 var file = path + date + buslines.shift() + '.txt';
                 taxi.open( "GET", file);
                 taxi.send();

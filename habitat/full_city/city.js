@@ -34,8 +34,52 @@ var zl = 13;
 
 var start = 0;
 var controls, skybox, light;
+var engine;
+
+var rainParams = {
+    //dingyh: postion
+    positionStyle    : Type.CUBE,
+    positionBase     : new THREE.Vector3( 0, 200, 0 ),
+    positionSpread   : new THREE.Vector3( 600, 0, 600 ), 
+
+    velocityStyle    : Type.CUBE,
+    velocityBase     : new THREE.Vector3( 0, -400, 0 ),
+    velocitySpread   : new THREE.Vector3( 10, 50, 10 ), 
+    accelerationBase : new THREE.Vector3( 0, -10,0 ),
+    
+    particleTexture : THREE.TextureLoader( 'img/raindrop2flip.png' ),
+
+    sizeBase    : 8.0,
+    sizeSpread  : 4.0,
+    colorBase   : new THREE.Vector3(0.66, 1.0, 0.7), // H,S,L
+    colorSpread : new THREE.Vector3(0.00, 0.0, 0.2),
+    opacityBase : 0.6,
+
+    particlesPerSecond : 1000,
+    particleDeathAge   : 1.0,		
+    emitterDeathAge    : 60
+};
 
 window.onload = function() {
+    // rain particle
+    $('#ckb_rain').change(function() { 
+        if($('#ckb_rain').is(':checked')){
+            //start rain
+            console.log(rainParams);
+            engine = new ParticleEngine();
+            engine.setValues( rainParams );
+            engine.initialize();
+        } else {
+            engine.destroy();
+        }
+    }); 
+
+    var hour = 6;
+    $('#btn_tween').click(function(){
+        busStations.updatePassengerFlow(++hour);
+    });
+
+
 
     scene = new THREE.Scene();
     //scene.fog = new THREE.FogExp2( 0xFFFFFF, 0.00005 );
@@ -72,6 +116,7 @@ window.onload = function() {
     var size = 2048;
 
     //skybox texture from http://www.keithlantz.net/2011/10/rendering-a-skybox-using-a-cube-map-with-opengl-and-glsl/
+    //dingyh: remove skybox
     skybox = new Skybox( "img/skybox_texture.jpg", 512, 0, function(){
 
          //dino.init( scene, camera, xy, skybox.cubeMap );
@@ -90,7 +135,10 @@ window.onload = function() {
 
         materials.init( skybox.cubeMap );
 
-        builder.init( scene );
+        var baseGroup = new THREE.Group();
+        baseGroup.name = 'baseGroup';
+        scene.add(baseGroup);
+        builder.init( baseGroup );
         //dingyh
         // water.init( function(){
 
@@ -104,7 +152,7 @@ window.onload = function() {
 
         //      });
         // });
-        land.init( scene, size, xy, function(){
+        // land.init( scene, size, xy, function(){
 
             map.init( size, true );
 
@@ -112,7 +160,7 @@ window.onload = function() {
 
             map.setView( lat, lng, zl );
 
-        });
+        // });
 
     } );
     start = Date.now();
@@ -125,10 +173,13 @@ function loadTaxis( status ){
     if(status==0 ){
         map.eventEmitter.removeListener( Map.ON_LOAD_COMPLETE, loadTaxis );
         //dingyh: load taxis data
-        taxis.init( scene, camera );
+        // taxis.init( scene, camera );
 
         //dingyh load bus stations
-        // busStations.init(scene, camera);
+        var group = new THREE.Group();
+        group.name = 'statFlowGroup';
+        scene.add(group);
+        busStations.init(group, camera);
     }
 }
 
@@ -153,7 +204,8 @@ function update(){
     light.position.y += 1000;
 
     materials.update();
-    taxis.update();
+    //dingyh: gps闪烁
+    // taxis.update();
     //dingyh
     busStations.update();
 
@@ -162,9 +214,12 @@ function update(){
     {
         var t = ( Date.now() - start ) * 0.0000001;
         taxis.updateTaxiCam( t%1 );
+
+        TWEEN.update();
         renderer.render( scene, taxis.taxiCamera );
 
     }else{
+        TWEEN.update();
         renderer.render( scene, camera );
     }
 
