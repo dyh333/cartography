@@ -2,7 +2,7 @@
 //https://github.com/mapbox/earcut
 var w = window.innerWidth;
 var h = window.innerHeight;
-var scene, camera, renderer, mesh, group;
+var scene, camera, renderer, clock, mesh, group;
 
  var lat, lng;
 
@@ -34,43 +34,24 @@ var zl = 13;
 
 var start = 0;
 var controls, skybox, light;
-var engine;
-
-var rainParams = {
-    //dingyh: postion
-    positionStyle    : Type.CUBE,
-    positionBase     : new THREE.Vector3( 0, 200, 0 ),
-    positionSpread   : new THREE.Vector3( 600, 0, 600 ), 
-
-    velocityStyle    : Type.CUBE,
-    velocityBase     : new THREE.Vector3( 0, -400, 0 ),
-    velocitySpread   : new THREE.Vector3( 10, 50, 10 ), 
-    accelerationBase : new THREE.Vector3( 0, -10,0 ),
-    
-    particleTexture : THREE.TextureLoader( 'img/raindrop2flip.png' ),
-
-    sizeBase    : 8.0,
-    sizeSpread  : 4.0,
-    colorBase   : new THREE.Vector3(0.66, 1.0, 0.7), // H,S,L
-    colorSpread : new THREE.Vector3(0.00, 0.0, 0.2),
-    opacityBase : 0.6,
-
-    particlesPerSecond : 1000,
-    particleDeathAge   : 1.0,		
-    emitterDeathAge    : 60
-};
 
 window.onload = function() {
     // rain particle
+    $('#ckb_snow').change(function() { 
+        if($('#ckb_snow').is(':checked')){
+            //start snow
+            weather.start('snow');
+        } else {
+            weather.stop('snow');
+        }
+    }); 
+
     $('#ckb_rain').change(function() { 
         if($('#ckb_rain').is(':checked')){
             //start rain
-            console.log(rainParams);
-            engine = new ParticleEngine();
-            engine.setValues( rainParams );
-            engine.initialize();
+            weather.start('rain');
         } else {
-            engine.destroy();
+            weather.stop('rain');
         }
     }); 
 
@@ -78,7 +59,9 @@ window.onload = function() {
     $('#btn_tween').click(function(){
         busStations.updatePassengerFlow(++hour);
     });
-
+    $('#btn_tween2').click(function(){
+        busStations.accumulatePassengerFlow(++hour);
+    });
 
 
     scene = new THREE.Scene();
@@ -90,6 +73,7 @@ window.onload = function() {
     document.body.appendChild(renderer.domElement);
 
     controls = new THREE.OrbitControls( camera );
+    clock = new THREE.Clock();
 
 
     scene.add( new THREE.AmbientLight( 0x101010 ) );
@@ -110,8 +94,6 @@ window.onload = function() {
     controls.target.x = xy[0];
     controls.target.z = xy[1];
     camera.lookAt( controls.target );
-
-
 
     var size = 2048;
 
@@ -135,6 +117,19 @@ window.onload = function() {
 
         materials.init( skybox.cubeMap );
 
+
+        // var gridHelper = new THREE.GridHelper(500, 40); // 500 is grid size, 20 is grid step
+        // var material = new THREE.MeshBasicMaterial({
+        //     color: 0xffffff,
+        //     transparent: true,
+        //     opacity: 0.1
+        // });
+        // gridHelper.material = material;
+        // // gridHelper.position = new THREE.Vector3(xy[0], 100, xy[1]);
+        // gridHelper.rotation = new THREE.Euler(0, 0, 0);
+        // gridHelper.position.set(xy[0], 10, xy[1]);
+        // scene.add(gridHelper);
+
         var baseGroup = new THREE.Group();
         baseGroup.name = 'baseGroup';
         scene.add(baseGroup);
@@ -153,6 +148,10 @@ window.onload = function() {
         //      });
         // });
         // land.init( scene, size, xy, function(){
+
+            //dingyh: add rain/snow environment
+            var particleGroup = weather.init(scene, xy);
+            scene.add( particleGroup.mesh );
 
             map.init( size, true );
 
@@ -173,13 +172,15 @@ function loadTaxis( status ){
     if(status==0 ){
         map.eventEmitter.removeListener( Map.ON_LOAD_COMPLETE, loadTaxis );
         //dingyh: load taxis data
-        // taxis.init( scene, camera );
+        taxis.init( scene, camera );
 
         //dingyh load bus stations
         var group = new THREE.Group();
         group.name = 'statFlowGroup';
         scene.add(group);
         busStations.init(group, camera);
+
+        graphic.init();
     }
 }
 
@@ -208,6 +209,9 @@ function update(){
     // taxis.update();
     //dingyh
     busStations.update();
+
+    var delta = clock.getDelta();
+    weather.update(delta);
 
     if(dinoLoaded)dino.update();
     if( driveTaxi )

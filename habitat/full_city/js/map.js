@@ -145,7 +145,7 @@ var map = function(exports){
                     }
                 }
             };
-            // buildings.open( "GET", 'http://192.168.34.181/nancy_server/getBuildsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            buildings.open( "GET", 'http://58.210.9.131/nancy_server/getBuildsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // buildings.open( "GET", 'http://localhost/NancyServer/getBuildsByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // buildings.send();
 
@@ -166,7 +166,7 @@ var map = function(exports){
                    }
                }
             };         
-            // water.open( "GET", 'http://192.168.34.181/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            // water.open( "GET", 'http://58.210.9.131/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // water.open( "GET", 'http://localhost/NancyServer/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // water.send();
 

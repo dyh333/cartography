@@ -9,9 +9,9 @@ var taxis = function( exports ){
     var taxiCamera;
     var tg = new THREE.Vector3();
 
-    var taxis = [
-        '../../taxi/busgpsdata/20161212_100.txt'
-    ];
+    // var taxis = [
+    //     '../../taxi/busgpsdata/20161212_100.txt'
+    // ];
 
     var path = '../../taxi/busgpsdata/';
     var date = '20161212_';
@@ -21,7 +21,7 @@ var taxis = function( exports ){
 
         exports.taxiCamera = camera.clone();//new THREE.PerspectiveCamera( 40, camera.aspect, .1, 10000000 );
 
-        var tot = taxis.length;
+        var tot = buslines.length;
         var taxi = new XMLHttpRequest();
         taxi.onload = function(e){
 
@@ -32,7 +32,7 @@ var taxis = function( exports ){
                 ll = [parseFloat(ll[0]), parseFloat(ll[1])];
 
                 var xy = map.mercator.latLonToMeters( -ll[0], ll[1], map.zoom);
-                geom.vertices.push( new THREE.Vector3( xy[0], 10 + ( tot - taxis.length  ), xy[1] ) );
+                geom.vertices.push( new THREE.Vector3( xy[0], 10 + ( tot - buslines.length  ), xy[1] ) );
 
                 return ll;
             });

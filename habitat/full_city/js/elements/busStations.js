@@ -71,9 +71,10 @@ var busStations = function( exports ){
                 meshUserData.sname = splitArray[1];
                 meshUserData.sdirection = splitArray[2];
                 meshUserData.spflow = _.drop(splitArray, 5);
+                meshUserData.baseH = height;
                 m.userData = meshUserData;
                 
-                m.position.set(xy[0], 10, xy[1]);
+                m.position.set(xy[0], 10 + height/2, xy[1]);
 
                 group.add( m );
                 /** create cylinder ---end **/
@@ -105,13 +106,80 @@ var busStations = function( exports ){
         // var tween = new TWEEN.Tween(cylinder.scale ).to( { y: cylinder.scale.y * 200 }, 3000 );
         // tween.start();
 
+        var upColor = new THREE.Color( "hsl(8, 86%, 50%)" );
+        var downColor = new THREE.Color( "hsl(199, 78%, 50%)" );
+        
+
         _.each(stationGroup.children, function (ele, idx) {
+            // var ele = stationGroup.children[0];
+
             var baseVal = parseFloat(ele.userData.spflow[0]); 
+            var lastVal = parseFloat(ele.userData.spflow[hour-6-1]); 
             var newVal = parseFloat(ele.userData.spflow[hour-6]); 
             var yScale = newVal / baseVal;
+
+            var baseH = parseFloat(ele.userData.baseH);
+            var newH = baseH * yScale;
             
-            var tween = new TWEEN.Tween(ele.scale).to({ y: yScale }, 500)
+            var tween = new TWEEN.Tween(ele.scale).to({ y: yScale }, 1000)
             tween.start();
+
+            var tween2 = new TWEEN.Tween(ele.position).to({ y: 10 + newH/2 }, 1000)
+            tween2.start().onComplete(function(){
+                if(newVal < lastVal){
+                    ele.material.color = downColor;
+                } else {
+                    ele.material.color = upColor; //new THREE.Color( "hsl(60, 100%, 50%)" );
+                }
+            });
+        });
+    }
+
+    exports.accumulatePassengerFlow = function(hour){
+        var geom = new THREE.Geometry();
+        var material = new THREE.PointsMaterial({
+            size: 10,
+            transparent: true,
+            opacity: 1,
+            vertexColors: true,
+            sizeAttenuation: true
+            // color: new THREE.Color( "hsl(60, 100%, 50%)" )
+        });
+        var color = new THREE.Color( "hsl(60, 100%, 50%)" );
+        
+        _.each(stationGroup.children, function (ele, idx) {
+            var newVal = parseFloat(ele.userData.spflow[hour-6]);
+
+            for(i=0; i<newVal; i++){
+                var particle = new THREE.Vector3(ele.position.x, 10 * i, ele.position.z);
+                geom.vertices.push(particle);
+                
+                geom.colors.push(color);
+            }
+        });
+
+        var cloud = new THREE.Points(geom, material);
+        cloud.position.setY ( 8000 );
+        stationGroup.add(cloud);
+
+        var tween = new TWEEN.Tween(cloud.position).to({ y: 0 }, 1000);
+        tween.start().onComplete(function(){
+            stationGroup.remove( cloud );
+        });
+
+        _.each(stationGroup.children, function (ele, idx) {
+            var baseVal = parseFloat(ele.userData.spflow[0]); 
+            var accumulateVal = _.reduce(_.take(ele.userData.spflow, hour-6+1), function(sum, n) { return sum + parseFloat(n); }, 0); 
+            var yScale = accumulateVal / baseVal;
+
+            var baseH = parseFloat(ele.userData.baseH);
+            var newH = baseH * yScale;
+
+            var tween2 = new TWEEN.Tween(ele.scale).to({ y: yScale }, 1000)
+            tween2.delay(1000).start();
+
+            var tween3 = new TWEEN.Tween(ele.position).to({ y: 10 + newH/2 }, 1000)
+            tween3.delay(1000).start();
         });
     }
 
