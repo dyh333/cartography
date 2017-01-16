@@ -36,6 +36,9 @@ var start = 0;
 var controls, skybox, light;
 
 window.onload = function() {
+    var isPaused = false;
+    var timer;
+
     // rain particle
     $('#ckb_snow').change(function() { 
         if($('#ckb_snow').is(':checked')){
@@ -55,18 +58,64 @@ window.onload = function() {
         }
     }); 
 
-    var hour = 6;
+    var i = 0;
     $('#btn_tween').click(function(){
-        busStations.updatePassengerFlow(++hour);
+        busStations.updatePassengerFlow(i++);
     });
     $('#btn_tween2').click(function(){
-        busStations.accumulatePassengerFlow(++hour);
+        busStations.accumulatePassengerFlow(i++);
+    });
+
+    $('#btn_animate').click(function(){
+        var currentFrame = 0;
+        var a_minute_last = 3000;
+        var numberOfFrames = (22-6+1)*4;
+
+        var flowType = $('input[name=flowType]:checked').val();
+
+        timer = setInterval( function () {
+            if(!isPaused){
+                currentFrame ++;
+                if (currentFrame > numberOfFrames ) {
+                    currentFrame = 0;
+                }
+                
+                graphic.updateTimeline(currentFrame);
+
+                if(flowType === 'individual'){
+                    busStations.updatePassengerFlow(currentFrame);
+                } else {
+                    busStations.accumulatePassengerFlow(currentFrame);
+                }
+                
+            }
+        }, a_minute_last );
+    });
+
+    $('#btn_pause').click(function(){
+        isPaused = !isPaused;
+        
+        if(isPaused){
+            $('#btn_pause').text('continue');
+        } else {
+            $('#btn_pause').text('pause');
+        }
+    });
+
+    $('#btn_reset').click(function(){
+        //todo
+        // 1. stop animate
+        clearInterval(timer);
+        // 2. reset station flow
+        busStations.reset();
+        // 3. reset graphic
+        graphic.resetBarChart();
     });
 
 
     scene = new THREE.Scene();
     //scene.fog = new THREE.FogExp2( 0xFFFFFF, 0.00005 );
-    camera = new THREE.PerspectiveCamera( 60, w / h,1, 100000 );
+    camera = new THREE.PerspectiveCamera( 60, w / h, 1, 100000 );
 
     renderer = new THREE.WebGLRenderer({logarithmicDepthBuffer:true});
     renderer.setSize(w, h);
@@ -88,10 +137,11 @@ window.onload = function() {
     // camera.position.z = -4528503.340282675;
     //dingyh: 
     camera.position.x = xy[0];
-    camera.position.y = 14615.668647974027;
+    camera.position.y = 20128.206178611854;
     camera.position.z = xy[1];
 
     controls.target.x = xy[0];
+    // controls.target.y = 0;
     controls.target.z = xy[1];
     camera.lookAt( controls.target );
 
@@ -118,16 +168,16 @@ window.onload = function() {
         materials.init( skybox.cubeMap );
 
 
-        // var gridHelper = new THREE.GridHelper(500, 40); // 500 is grid size, 20 is grid step
+        // var gridHelper = new THREE.GridHelper(15000, 40); // 500 is grid size, 20 is grid step
         // var material = new THREE.MeshBasicMaterial({
         //     color: 0xffffff,
         //     transparent: true,
         //     opacity: 0.1
         // });
         // gridHelper.material = material;
-        // // gridHelper.position = new THREE.Vector3(xy[0], 100, xy[1]);
+        // // gridHelper.position = new THREE.Vector3(xy[0], 1000, xy[1]);
         // gridHelper.rotation = new THREE.Euler(0, 0, 0);
-        // gridHelper.position.set(xy[0], 10, xy[1]);
+        // gridHelper.position.set(xy[0], 1000, xy[1]);
         // scene.add(gridHelper);
 
         var baseGroup = new THREE.Group();
@@ -172,7 +222,7 @@ function loadTaxis( status ){
     if(status==0 ){
         map.eventEmitter.removeListener( Map.ON_LOAD_COMPLETE, loadTaxis );
         //dingyh: load taxis data
-        taxis.init( scene, camera );
+        // taxis.init( scene, camera );
 
         //dingyh load bus stations
         var group = new THREE.Group();
@@ -193,7 +243,6 @@ window.onresize = function(){
 };
 
 function update(){
-
     requestAnimationFrame(update);
 
     //reloads map as we move around

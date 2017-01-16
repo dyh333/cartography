@@ -166,7 +166,7 @@ var map = function(exports){
                    }
                }
             };         
-            // water.open( "GET", 'http://58.210.9.131/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
+            water.open( "GET", 'http://58.210.9.131/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // water.open( "GET", 'http://localhost/NancyServer/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // water.send();
 

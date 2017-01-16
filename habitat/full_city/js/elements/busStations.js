@@ -6,21 +6,36 @@ var busStations = function( exports ){
     var stationCurves = [];
     var stationMaterials = [];
     var stationTime = [];
-    var stationGroup, stationCamera;
+    var stationGroup, cloneGroup, stationCamera;
     var tg = new THREE.Vector3();
 
-    var minCount = 0, maxCount = 300;
+    var minCount = 0, maxCount = 312; //菁英公寓
     var minCylinderH = 0, maxCylinderH = 600;
+    var baseH = 1; //基础高度，所有高度都与它比计算scale
+    var levelH = 10; //水平基准高度
 
     // var stations = [
     //     '../../taxi/busstationdata/sip_bus_stations.txt'
     // ];
     var stationsFlow = [
-        '../../taxi/busstationdata/sip_bus_station_flow_20161212.txt'
+        '../../taxi/busstationdata/sip_bus_station_flow_quarter_20161212.txt'
     ];
+
+    exports.reset = function(){
+        for (var i = stationGroup.children.length - 1; i >= 0; i--) {
+            stationGroup.remove(stationGroup.children[i]);
+        }
+        
+        for (var i = 0; i < cloneGroup.children.length; i++) {
+            var mesh = cloneGroup.children[i].clone();
+            mesh.material.color = new THREE.Color( "hsl(60, 100%, 50%)" );
+            stationGroup.add(mesh);
+        }
+    }
 
     exports.init = function( group, camera ){
         stationGroup = group;
+        cloneGroup = new THREE.Group();
         exports.stationCamera = camera.clone();//new THREE.PerspectiveCamera( 40, camera.aspect, .1, 10000000 );
 
         var tot = stationsFlow.length;
@@ -55,9 +70,10 @@ var busStations = function( exports ){
 
                 /** create cylinder **/
                 var initCount = _.drop(splitArray, 5)[0]; //6点的值
-                var height = (maxCylinderH - minCylinderH)/(maxCount-minCount)*(initCount-minCount);
+                // var height = (maxCylinderH - minCylinderH)/(maxCount-minCount)*(initCount-minCount);  //*2 太低了
+ 
                 
-                var cylinderGeo = new THREE.CylinderGeometry(20, 20, height);
+                var cylinderGeo = new THREE.CylinderGeometry(20, 20, baseH);
 
                 var stationMaterial = new THREE.MeshPhongMaterial({ 
                     color: new THREE.Color( "hsl("+ col +", 100%, 50%)" ), 
@@ -67,33 +83,29 @@ var busStations = function( exports ){
 
                 var m = new THREE.Mesh( cylinderGeo, stationMaterial );
                 var meshUserData = new Object();
-                meshUserData.sguid = splitArray[0];
-                meshUserData.sname = splitArray[1];
-                meshUserData.sdirection = splitArray[2];
-                meshUserData.spflow = _.drop(splitArray, 5);
-                meshUserData.baseH = height;
+                meshUserData.sguid = splitArray[0].replace("\"", "");
+                meshUserData.sname = splitArray[1].replace("\"", "");
+                meshUserData.sdirection = splitArray[2].replace("\"", "");
+                meshUserData.spflow = _.drop(splitArray, 5);     
+                // meshUserData.baseH = height;
                 m.userData = meshUserData;
-                
-                m.position.set(xy[0], 10 + height/2, xy[1]);
+                 
 
-                group.add( m );
+                // var yScale = initCount / baseH * 10;  
+                // if(yScale !== 0){ 
+                //     m.visible = true;
+                //     m.scale.setY(yScale); //initCount / baseH * 10000;
+                // } else {
+                //     m.visible = false;
+                // }
+                // m.position.set(xy[0], levelH + (yScale)/2, xy[1]); 
+                 
+                m.position.set(xy[0], levelH, xy[1]);    
+                
+                stationGroup.add( m );
+                cloneGroup.add(m.clone());
                 /** create cylinder ---end **/
             });
-
-            
-            // stationCurves.push(geom.vertices );
-            // stationMaterials.push(stationMaterial);
-            // stationTime.push( stations.length / tot );
-
-            // if( stations.length > 0 ){
-            //     station.open( "GET", stations.shift() );
-            //     station.send();
-            // }else{
-            //     //dingyh: 做啥用？？？
-            //     stationTime.sort(function( a,b){return Math.random() < .5 ? - 1 : 1; });
-            // }
-
-            // renderTaxi = true;
         };
 
         station.open( "GET", stationsFlow.shift() );
@@ -101,7 +113,7 @@ var busStations = function( exports ){
     };
 
     //dingyh
-    exports.updatePassengerFlow = function(hour){
+    exports.updatePassengerFlow = function(currentFrame){
         // var cylinder = stationGroup.children[0];
         // var tween = new TWEEN.Tween(cylinder.scale ).to( { y: cylinder.scale.y * 200 }, 3000 );
         // tween.start();
@@ -111,31 +123,52 @@ var busStations = function( exports ){
         
 
         _.each(stationGroup.children, function (ele, idx) {
-            // var ele = stationGroup.children[0];
+            // var baseVal = parseFloat(ele.userData.spflow[0]); 
+            var lastVal = currentFrame>0 ? parseFloat(ele.userData.spflow[currentFrame - 1]) : 0; 
+            var newVal = parseFloat(ele.userData.spflow[currentFrame]);
+            // var yScale = newVal / baseVal;
+            var yScale = newVal / baseH * 10;  
 
-            var baseVal = parseFloat(ele.userData.spflow[0]); 
-            var lastVal = parseFloat(ele.userData.spflow[hour-6-1]); 
-            var newVal = parseFloat(ele.userData.spflow[hour-6]); 
-            var yScale = newVal / baseVal;
+            // var baseH = parseFloat(ele.userData.baseH);
+            // var newH = baseH * yScale; 
 
-            var baseH = parseFloat(ele.userData.baseH);
-            var newH = baseH * yScale;
+            if(newVal < lastVal){
+                ele.material.color = downColor;
+            } else {
+                ele.material.color = upColor;
+            }
+
+            if(yScale !== 0){
+                ele.visible = true;
+                
+                var tween = new TWEEN.Tween(ele.scale).to({ y: yScale }, 1000)
+                tween.start();
+
+                var tween2 = new TWEEN.Tween(ele.position).to({ y: levelH + (yScale)/2 }, 1000)
+                tween2.start();
+            } else {
+                var tween = new TWEEN.Tween(ele.scale).to({ y: 1 }, 1000)
+                tween.start().onComplete(function(){
+                    ele.position.setY(levelH);
+                    ele.visible = false;
+                });
+            }
             
-            var tween = new TWEEN.Tween(ele.scale).to({ y: yScale }, 1000)
-            tween.start();
+            // var tween = new TWEEN.Tween(ele.scale).to({ y: yScale }, 1000)
+            // tween.start();
 
-            var tween2 = new TWEEN.Tween(ele.position).to({ y: 10 + newH/2 }, 1000)
-            tween2.start().onComplete(function(){
-                if(newVal < lastVal){
-                    ele.material.color = downColor;
-                } else {
-                    ele.material.color = upColor; //new THREE.Color( "hsl(60, 100%, 50%)" );
-                }
-            });
+            // var tween2 = new TWEEN.Tween(ele.position).to({ y: 10 + newH/2 }, 1000)
+            // tween2.start().onComplete(function(){
+                // if(newVal < lastVal){
+                //     ele.material.color = downColor;
+                // } else {
+                //     ele.material.color = upColor; //new THREE.Color( "hsl(60, 100%, 50%)" );
+                // }
+            // });
         });
     }
 
-    exports.accumulatePassengerFlow = function(hour){
+    exports.accumulatePassengerFlow = function(currentFrame){
         var geom = new THREE.Geometry();
         var material = new THREE.PointsMaterial({
             size: 10,
@@ -148,7 +181,7 @@ var busStations = function( exports ){
         var color = new THREE.Color( "hsl(60, 100%, 50%)" );
         
         _.each(stationGroup.children, function (ele, idx) {
-            var newVal = parseFloat(ele.userData.spflow[hour-6]);
+            var newVal = parseFloat(ele.userData.spflow[currentFrame]);
 
             for(i=0; i<newVal; i++){
                 var particle = new THREE.Vector3(ele.position.x, 10 * i, ele.position.z);
@@ -159,7 +192,7 @@ var busStations = function( exports ){
         });
 
         var cloud = new THREE.Points(geom, material);
-        cloud.position.setY ( 8000 );
+        cloud.position.setY ( 10000 );
         stationGroup.add(cloud);
 
         var tween = new TWEEN.Tween(cloud.position).to({ y: 0 }, 1000);
@@ -168,17 +201,18 @@ var busStations = function( exports ){
         });
 
         _.each(stationGroup.children, function (ele, idx) {
-            var baseVal = parseFloat(ele.userData.spflow[0]); 
-            var accumulateVal = _.reduce(_.take(ele.userData.spflow, hour-6+1), function(sum, n) { return sum + parseFloat(n); }, 0); 
-            var yScale = accumulateVal / baseVal;
+            // var baseVal = parseFloat(ele.userData.spflow[0]); 
+            var accumulateVal = _.reduce(_.take(ele.userData.spflow, currentFrame+1), function(sum, n) { return sum + parseFloat(n); }, 0); 
+            // var yScale = accumulateVal / baseVal;
+            var yScale = accumulateVal / baseH * 2;
 
-            var baseH = parseFloat(ele.userData.baseH);
-            var newH = baseH * yScale;
+            // var baseH = parseFloat(ele.userData.baseH);
+            // var newH = baseH * yScale;
 
             var tween2 = new TWEEN.Tween(ele.scale).to({ y: yScale }, 1000)
             tween2.delay(1000).start();
 
-            var tween3 = new TWEEN.Tween(ele.position).to({ y: 10 + newH/2 }, 1000)
+            var tween3 = new TWEEN.Tween(ele.position).to({ y: levelH + (yScale)/2 }, 1000)
             tween3.delay(1000).start();
         });
     }

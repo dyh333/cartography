@@ -13,6 +13,25 @@
             margin:0;
             padding:0;
         }
+
+        .graph{
+            width: 100%; 
+            background-color: black;
+        }
+
+        .graph text{
+            fill: white;
+        }
+
+        .tip-highlight {
+            font-size: 16px;
+            color: #2bb673;
+            font-weight: bold;
+        }
+
+        .tip-text {
+            color: white;
+        }
     </style>
     <link rel="stylesheet" href="../../vendor/compiled/flipclock.css">
 </head>
@@ -23,9 +42,15 @@
         <div style="float: left; margin-right: 30px;"><input id="ckb_snow" type="checkbox">snow</div>
         <div style="float: left; margin-right: 30px;"><button id="btn_tween">tween</div>
         <div style="float: left; margin-right: 30px;"><button id="btn_tween2">tween2</div>
+
+        <div style="float: left; margin-right: 30px;"><input type="radio" name="flowType" value="individual" checked> individual</div>
+        <div style="float: left; margin-right: 30px;"><input type="radio" name="flowType" value="accumulate"> accumulate</div>
+        <div style="float: left; margin-right: 30px;"><button id="btn_animate">startAnimate</div>
+        <div style="float: left; margin-right: 30px;"><button id="btn_pause">pause</div>
+        <div style="float: left; margin-right: 30px;"><button id="btn_reset">reset</div>
     </div>
 
-    <div class="graph" style="width: 100%;">
+    <div class="graph">
 
     </div>
 
@@ -42,7 +67,9 @@
 
     <script src="../../vendor/jquery1.10.2.min.js"></script>
     <script src="../../vendor/lodash.min.js"></script>
+    <script src="../../vendor/moment.min.js"></script>
     <script src="../../vendor/d3.min.js"></script>
+    <script src="../../vendor/d3.tip.v0.6.3.js"></script>
     <script src="../../vendor/compiled/flipclock.js"></script>
     
 
