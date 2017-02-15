@@ -38,6 +38,112 @@ var controls, skybox, light;
 window.onload = function() {
     var isPaused = false;
     var timer;
+    var intervalDate = moment("2016-12-12 6:00", "YYYY-MM-DD HH:mm");
+
+    $('#tab_gps').click(function(){
+        $(this).addClass('tab-selected');
+        $('#tab_flow').removeClass('tab-selected');
+
+        $('#div_gps').show();
+        $('#div_flow').hide();
+        $('#div_graphic').hide();
+        showGps();
+    });
+    $('#tab_flow').click(function(){
+        $(this).addClass('tab-selected');
+        $('#tab_gps').removeClass('tab-selected');
+
+        $('#div_gps').hide();
+        $('#div_flow').show();
+        $('#div_graphic').show();
+        showFlow();
+    });
+
+    $('#div_top_busline > div').click(function(){
+        var busline = _.last(_.split($(this)[0].id, '_'));
+        
+        var dateLineGps = '20161212_' + busline;
+
+        // taxis.filter(busline);
+        taxis.highlight(busline);
+    });
+
+    $('#div_top_busstation > div').click(function(){
+        var busstation = _.last(_.split($(this)[0].id, '_'));
+        
+        console.log(busstation)
+    });
+
+    $('#btn_pause').click(function(){
+        isPaused = !isPaused;
+        
+        if(isPaused){
+            $('#btn_pause').text('播放');
+        } else {
+            $('#btn_pause').text('暂停');
+
+            startAnimate();
+        }
+    });
+
+    $('#btn_reset').click(function(){
+        // 1. stop animate
+        clearInterval(timer);
+        // 2. reset station flow
+        busStations.reset();
+        // 3. reset graphic
+        graphic.resetBarChart();
+
+        $('#btn_pause').text('播放');
+    });
+
+    function showGps(){
+        $('.graph').empty();
+        var statFlowGroup = scene.getObjectByName('statFlowGroup');
+        scene.remove(statFlowGroup);
+
+        var gpsGroup = new THREE.Group();
+        gpsGroup.name = 'gpsGroup';
+        scene.add(gpsGroup);
+        taxis.init( gpsGroup, camera );
+    }
+
+    function showFlow(){
+        var gpsGroup = scene.getObjectByName('gpsGroup');
+        scene.remove(gpsGroup);
+
+        var statFlowGroup = new THREE.Group();
+        statFlowGroup.name = 'statFlowGroup';
+        scene.add(statFlowGroup);
+        busStations.init(statFlowGroup, camera, renderer);
+
+        graphic.init();
+    }
+
+    $('input:radio[name="showType"]').change(
+        function(){
+            if ($(this).is(':checked') && $(this).val() == 'GPS') {
+                $('.graph').empty();
+                var statFlowGroup = scene.getObjectByName('statFlowGroup');
+                scene.remove(statFlowGroup);
+
+                var gpsGroup = new THREE.Group();
+                gpsGroup.name = 'gpsGroup';
+                scene.add(gpsGroup);
+                taxis.init( gpsGroup, camera );
+            } else {
+                var gpsGroup = scene.getObjectByName('gpsGroup');
+                scene.remove(gpsGroup);
+
+                var statFlowGroup = new THREE.Group();
+                statFlowGroup.name = 'statFlowGroup';
+                scene.add(statFlowGroup);
+                busStations.init(statFlowGroup, camera, renderer);
+
+                graphic.init();
+            }
+        }
+    );
 
     // rain particle
     $('#ckb_snow').change(function() { 
@@ -65,8 +171,11 @@ window.onload = function() {
     $('#btn_tween2').click(function(){
         busStations.accumulatePassengerFlow(i++);
     });
+    $('#btn_tweenball').click(function(){
+        stationOD.startTween();
+    });
 
-    $('#btn_animate').click(function(){
+    function startAnimate(){
         var currentFrame = 0;
         var a_minute_last = 3000;
         var numberOfFrames = (22-6+1)*4;
@@ -78,7 +187,11 @@ window.onload = function() {
                 currentFrame ++;
                 if (currentFrame > numberOfFrames ) {
                     currentFrame = 0;
+                    intervalDate = moment("2016-12-12 6:00", "YYYY-MM-DD HH:mm");
                 }
+
+                intervalDate = intervalDate.add('m', 30);
+                $('#span_intervalTime').text(intervalDate.format("HH:mm"));
                 
                 graphic.updateTimeline(currentFrame);
 
@@ -90,27 +203,27 @@ window.onload = function() {
                 
             }
         }, a_minute_last );
-    });
+    };
 
-    $('#btn_pause').click(function(){
-        isPaused = !isPaused;
+    // $('#btn_pause').click(function(){
+    //     isPaused = !isPaused;
         
-        if(isPaused){
-            $('#btn_pause').text('continue');
-        } else {
-            $('#btn_pause').text('pause');
-        }
-    });
+    //     if(isPaused){
+    //         $('#btn_pause').text('continue');
+    //     } else {
+    //         $('#btn_pause').text('pause');
+    //     }
+    // });
 
-    $('#btn_reset').click(function(){
-        //todo
-        // 1. stop animate
-        clearInterval(timer);
-        // 2. reset station flow
-        busStations.reset();
-        // 3. reset graphic
-        graphic.resetBarChart();
-    });
+    // $('#btn_reset').click(function(){
+    //     //todo
+    //     // 1. stop animate
+    //     clearInterval(timer);
+    //     // 2. reset station flow
+    //     busStations.reset();
+    //     // 3. reset graphic
+    //     graphic.resetBarChart();
+    // });
 
 
     scene = new THREE.Scene();
@@ -222,15 +335,26 @@ function loadTaxis( status ){
     if(status==0 ){
         map.eventEmitter.removeListener( Map.ON_LOAD_COMPLETE, loadTaxis );
         //dingyh: load taxis data
-        // taxis.init( scene, camera );
+        // var gpsGroup = new THREE.Group();
+        // gpsGroup.name = 'gpsGroup';
+        // scene.add(gpsGroup);
+        // taxis.init( gpsGroup, camera );
 
-        //dingyh load bus stations
-        var group = new THREE.Group();
-        group.name = 'statFlowGroup';
-        scene.add(group);
-        busStations.init(group, camera);
+        // //dingyh load bus stations
+        // var statFlowGroup = new THREE.Group();
+        // statFlowGroup.name = 'statFlowGroup';
+        // scene.add(statFlowGroup);
+        // busStations.init(statFlowGroup, camera, renderer);
 
-        graphic.init();
+        // graphic.init();
+
+        //dingyh: load station od
+        // var statODGroup = new THREE.Group();
+        // statODGroup.name = 'statODGroup';
+        // scene.add(statODGroup);
+        // stationOD.init(statODGroup, camera);
+
+        
     }
 }
 

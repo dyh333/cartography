@@ -5,6 +5,7 @@ var graphic = function( exports ){
     var years=[];
 
     exports.init = function( scene, xy ){
+
         d3.csv('../../taxi/busstationdata/sip_date_quarter_flow_20161212.csv', function (data) {
             var nested_data_count = [];
 
@@ -60,7 +61,7 @@ var graphic = function( exports ){
     function initBarChart(data){
         this.data = data;
         var margin = {top: 40, right: 40, bottom: 30, left: 30};
-        var width = $('.graph').width();
+        var width = $('.graph').width() - margin.left - margin.right;
 
         var height = 200 - margin.top - margin.bottom;
         var barWidth = 3;

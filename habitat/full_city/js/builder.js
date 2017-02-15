@@ -95,7 +95,7 @@ var builder = function(exports){
 
             if( !valid ) return;
 
-            // !!! 这里是为了构造点和边，方便后续用德劳内三角剖分 ???
+            // !!! 这里是为了构造点和边，方便后续用德劳内三角剖分
             //stores this feature's data
             bufferVertices.push( vertices );
             bufferEdges.push( edges );

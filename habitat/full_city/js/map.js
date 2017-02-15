@@ -152,19 +152,19 @@ var map = function(exports){
             //加载水系数据
             var water = new XMLHttpRequest();
             water.onload = function(e) {
-               if (water.readyState === 4) {
-                   if (water.status === 200) {
+                if (water.readyState === 4) {
+                    if (water.status === 200) {
             
-                       if( e.target.responseText == '' ){
-                           console.log( "empty JSON", url );
-                           return
-                       }
-                       var json = JSON.parse(e.target.responseText );
-                       builder.buildBlocks( null, "water", json );
-                   }else{
-                       console.log("error loading water");
+                        if( e.target.responseText == '' ){
+                            console.log( "empty JSON", url );
+                            return
+                        }
+                        var json = JSON.parse(e.target.responseText );
+                        builder.buildBlocks( null, "water", json );
+                    }else{
+                        console.log("error loading water");
                    }
-               }
+                }
             };         
             water.open( "GET", 'http://58.210.9.131/nancy_server/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );
             // water.open( "GET", 'http://localhost/NancyServer/getWatersByExtent/'+minX+'/'+minY+'/'+maxX+'/'+maxY );

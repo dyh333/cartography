@@ -15,8 +15,8 @@
         }
 
         .graph{
-            width: 100%; 
-            background-color: black;
+            width: calc(100% - 330px); 
+            /*background-color: black;*/
         }
 
         .graph text{
@@ -32,30 +32,201 @@
         .tip-text {
             color: white;
         }
+
+        .panel {
+            /*height: 200px;*/
+            width: 300px;
+            position: absolute;
+            top: 0px;
+            left: 20px;
+        }
+
+        .tab-selected {
+            background-color: #007b2e; 
+            font-weight: bold;
+        }
     </style>
     <link rel="stylesheet" href="../../vendor/compiled/flipclock.css">
 </head>
 <body>
     <!--<div class="clock" style="margin:2em;"></div>-->
-    <div style="width: 100%; height: 30px; ">
+    <!--<div style="width: 100%; height: 30px; ">
+        <div style="float: left; margin-right: 30px;"><input type="radio" name="showType" value="GPS"> GPS</div>
+        <div style="float: left; margin-right: 30px;"><input type="radio" name="showType" value="StationFlow"> StationFlow</div>
+        
+
         <div style="float: left; margin-right: 30px;"><input id="ckb_rain" type="checkbox">rain</div>
         <div style="float: left; margin-right: 30px;"><input id="ckb_snow" type="checkbox">snow</div>
         <div style="float: left; margin-right: 30px;"><button id="btn_tween">tween</div>
         <div style="float: left; margin-right: 30px;"><button id="btn_tween2">tween2</div>
+        <div style="float: left; margin-right: 30px;"><button id="btn_tweenball">tweenball</div>
 
         <div style="float: left; margin-right: 30px;"><input type="radio" name="flowType" value="individual" checked> individual</div>
         <div style="float: left; margin-right: 30px;"><input type="radio" name="flowType" value="accumulate"> accumulate</div>
         <div style="float: left; margin-right: 30px;"><button id="btn_animate">startAnimate</div>
         <div style="float: left; margin-right: 30px;"><button id="btn_pause">pause</div>
         <div style="float: left; margin-right: 30px;"><button id="btn_reset">reset</div>
-    </div>
+    </div>-->
 
-    <div class="graph">
+    <!--<div class="graph">
+    </div>-->
 
+    <div class='panel' style="background-color: rgba(0, 0, 0, 0.8);">
+        <div style="background-image: url('img/tab_bg_01.gif'); height: 58px;"></div>
+        <div style="background-image: url('img/tab_bg_02.gif'); height: 42px;">
+            <span id="tab_gps" style="margin-top: 6px; margin-left: 20px; cursor: pointer; line-height:30px; display:inline-block; vertical-align: middle; text-align: center; color: white; width: 80px; height:30px; font-size: 14px;">运营轨迹</span>
+            <span id="tab_flow" style="margin-top: 6px; margin-left: 10px; cursor: pointer; line-height:30px; display:inline-block; vertical-align: middle; text-align: center; color: white; width: 80px; height:30px; font-size: 14px;">站点客流</span>
+        </div>
+        <div id="div_gps" >
+            <div style="position: relative; height: 105px;">
+                <div style="width: 50%; position: absolute; bottom:20px; border-right: 1px solid #696969;">
+                    <div style="text-align:center;"><span style="color: white; font-size: 30px; font-family: Arial; font-weight: bold;">6945</span></div>
+                    <div style="text-align:center;"><span style="color: #8c8c8c; font-size: 12px;">发车班次[班]</span></div>
+                </div>
+                <div style="width: 50%; position: absolute; left: 50%; bottom:20px;">
+                    <div style="text-align:center;"><span style="color: white; font-size: 30px; font-family: Arial; font-weight: bold;">14.43</span></div>
+                    <div style="text-align:center;"><span style="color: #8c8c8c; font-size: 12px;">行驶里程[万公里]</span></div>
+                </div>
+            </div>
+            
+            <div style="margin-left: 20px; margin-right: 20px; height: 40px; border-top: 1px solid #696969; border-bottom: 1px solid #696969;">
+                <span style="line-height:40px; color: white; font-size: 12px;">线路运营里程TOP5</span>
+            </div>
+            <div id="div_top_busline" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px; margin-top:14px;">
+                <div id="div_busline_120">
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">120</span>
+                    <span style="display:inline-block; height: 16px; width: 221.9px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;5547.714</span>
+                </div>  
+                <div id="div_busline_6">
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">6</span>
+                    <span style="display:inline-block; height: 16px; width: 220.5px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;5512.240</span>
+                </div>  
+                <div id="div_busline_110">
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">110</span>
+                    <span style="display:inline-block; height: 16px; width: 216.6px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;5414.057</span>
+                </div>  
+                <div id="div_busline_146">
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">146</span>
+                    <span style="display:inline-block; height: 16px; width: 192.5px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;4812.178</span>
+                </div> 
+                <div id="div_busline_307">
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">307</span>
+                    <span style="display:inline-block; height: 16px; width: 190.8px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;4769.127</span>
+                </div> 
+            </div>
+            <div style="margin-left: 20px; margin-right: 20px; height: 40px; border-top: 1px solid #696969; border-bottom: 1px solid #696969;">
+                <span style="line-height:40px; color: white; font-size: 12px;">车辆运营里程TOP5</span>
+            </div>
+            <div id="div_top_busno" style="margin-left: 20px; margin-right: 20px; margin-top:14px;">
+                <div>
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">6</span>
+                    <span style="display:inline-block; height: 16px; width: 40px; text-align: center; font-size: 12px; color: white;">63139</span>
+                    <span style="display:inline-block; height: 16px; width: 172.0px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;382.171</span>
+                </div>  
+                <div>
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">6</span>
+                    <span style="display:inline-block; height: 16px; width: 40px; text-align: center; font-size: 12px; color: white;">63156</span>
+                    <span style="display:inline-block; height: 16px; width: 171.1px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;380.189</span>
+                </div>  
+                <div>
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">6</span>
+                    <span style="display:inline-block; height: 16px; width: 40px; text-align: center; font-size: 12px; color: white;">63149</span>
+                    <span style="display:inline-block; height: 16px; width: 170.9px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;379.775</span>
+                </div> 
+                <div>
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">110</span>
+                    <span style="display:inline-block; height: 16px; width: 40px; text-align: center; font-size: 12px; color: white;">63158</span>
+                    <span style="display:inline-block; height: 16px; width: 170.7px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;379.365</span>
+                </div> 
+                <div>
+                    <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">6</span>
+                    <span style="display:inline-block; height: 16px; width: 40px; text-align: center; font-size: 12px; color: white;">63140</span>
+                    <span style="display:inline-block; height: 16px; width: 170.68px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;379.294</span>
+                </div> 
+            </div>
+        </div>
+
+        <div id="div_flow" style="display: none;">
+            <div style="line-height:40px;  margin-left: 20px; margin-right: 20px; height: 40px; color: white; border-bottom: 1px solid #696969; font-size: 12px;">
+                <input type="radio" name="flowType" value="individual" checked> 分时客流[15min]
+                <input type="radio" name="flowType" value="accumulate"> 累计客流
+            </div>
+
+            <div style="position: relative; height: 105px;">
+                <div style="width: 50%; position: absolute; bottom:20px; border-right: 1px solid #696969;">
+                    <div style="text-align:center;"><span style="color: white; font-size: 30px; font-family: Arial; font-weight: bold;">18.66</span></div>
+                    <div style="text-align:center;"><span style="color: #8c8c8c; font-size: 12px;">客流总量[万人]</span></div>
+                </div>
+                <div style="width: 50%; position: absolute; left: 50%; bottom:20px;">
+                    <div style="text-align:center;"><span style="color: white; font-size: 30px; font-family: Arial; font-weight: bold;">412</span></div>
+                    <div style="text-align:center;"><span style="color: #8c8c8c; font-size: 12px;">在线车辆</span></div>
+                </div>
+            </div>
+
+            <div style="margin-left: 20px; margin-right: 20px; height: 40px; border-top: 1px solid #696969; border-bottom: 1px solid #696969;">
+                <span style="line-height:40px; color: white; font-size: 12px;">站点客流TOP5</span>
+            </div>
+            <div id="div_top_busstation" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px; margin-top: 16px;">
+                <div id="div_busstation_e01d058c-05b7-44f9-8f28-4a8d01e5aea5">
+                    <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">南</span>
+                    <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">菁英公寓</span>
+                    <span style="display:inline-block; height: 16px; width: 135.2px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1931</span>
+                </div>  
+                <div id="div_busstation_4722ab93-c31f-457f-880a-47c5abfe5ae6">
+                    <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">西</span>
+                    <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">钟南街首末站南</span>
+                    <span style="display:inline-block; height: 16px; width: 129.7px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1853</span>
+                </div>  
+                <div id="div_busstation_8e03618f-c9a7-f5ee-bb6d-e077f85c9707">
+                    <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">东</span>
+                    <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">园区行政中心西</span>
+                    <span style="display:inline-block; height: 16px; width: 116.4px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1663</span>
+                </div> 
+                <div id="div_busstation_2ea83a3b-4be4-0988-a95c-478eafa438c0">
+                    <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">西</span>
+                    <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">园区行政中心西</span>
+                    <span style="display:inline-block; height: 16px; width: 99.7px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1424</span>
+                </div> 
+                <div id="div_busstation_24dd8f63-51d3-445e-8cc4-8787aeea5853">
+                    <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">东</span>
+                    <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">创意产业园</span>
+                    <span style="display:inline-block; height: 16px; width: 94.7px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1353</span>
+                </div> 
+            </div>
+            <div style="margin-left: 20px; margin-right: 20px; height: 40px; border-top: 1px solid #696969; border-bottom: 1px solid #696969;">
+                <span style="line-height:40px; color: #8c8c8c; font-size: 12px;">图例：</span>
+                <img src="img/legend_blue.png" style="vertical-align: middle;" />            
+                <span style="line-height:40px; color: #8c8c8c; font-size: 12px;">环比客流下降</span>
+                <img src="img/legend_red.png" style="vertical-align: middle;" /> 
+                <span style="line-height:40px; color: #8c8c8c; font-size: 12px;">环比客流上升</span>
+            </div>
+            
+        </div>
+
+        <div style="padding: 20px; border-bottom: 5px solid #249e52">
+            <div>
+                <span style="font-size: 12px; color: #8c8c8c;">数据来源：苏州工业园区公交公司</span>
+            </div>  
+            <div>
+                <span style="font-size: 12px; color: #8c8c8c;">时间范围：2016/12/12 6:00-23:00</span>
+            </div> 
+        </div>
+
+        <div id="div_graphic" style="display: none; position: fixed; bottom: 30px; height:230px; width: 100%;">
+            <div style="float: left; height: 100%; width: 300px; margin-right: 20px; background-color: rgb(0, 0, 0, 0.8);">
+                <div style="text-align: center; margin-top: 30px;"><span id="span_intervalTime" style="font-size: 72px; color: #616161; font-family: arial; font-weight: bold;">06:00</span></div>
+                <div style="text-align: center;">
+                    <button id="btn_pause" style="cursor: pointer; width: 50px; height: 25px; background-color: #249e52; border-color: #249e52; color: white; margin-right: 10px;">播放</button>
+                    <button id="btn_reset" style="cursor: pointer; width: 50px; height: 25px; background-color: #249e52; border-color: #249e52; color: white;">重置</button>
+                </div>
+            </div>
+            <div class="graph" style="float: left; height: 100%; background-color: rgb(0, 0, 0, 0.8);"></div>
+        </div>
     </div>
 
     <script src="../../vendor/light-map.js"></script>
     <script src="../../vendor/three.js"></script>
+    <script src="../../vendor/threex.domevents.js"></script>
     <script src="../../vendor/Tween.min.js"></script>
     <script src="../../vendor/BinaryLoader.js"></script>
     <script src="../../vendor/OrbitControls.js"></script>
@@ -85,6 +256,7 @@
     <script src="js/elements/taxis.js"></script>
     <script src="js/elements/weather.js"></script>
     <script src="js/elements/busStations.js"></script>
+    <script src="js/elements/stationOD.js"></script>
     <script src="js/elements/water.js"></script>
     <script src="js/elements/TileBuffer.js"></script>
     <script src="city.js"></script>

@@ -7,6 +7,7 @@ var busStations = function( exports ){
     var stationMaterials = [];
     var stationTime = [];
     var stationGroup, cloneGroup, stationCamera;
+    var domEvents;
     var tg = new THREE.Vector3();
 
     var minCount = 0, maxCount = 312; //菁英公寓
@@ -17,9 +18,7 @@ var busStations = function( exports ){
     // var stations = [
     //     '../../taxi/busstationdata/sip_bus_stations.txt'
     // ];
-    var stationsFlow = [
-        '../../taxi/busstationdata/sip_bus_station_flow_quarter_20161212.txt'
-    ];
+    
 
     exports.reset = function(){
         for (var i = stationGroup.children.length - 1; i >= 0; i--) {
@@ -33,9 +32,14 @@ var busStations = function( exports ){
         }
     }
 
-    exports.init = function( group, camera ){
+    exports.init = function( group, camera, renderer ){
+        var stationsFlow = [
+            '../../taxi/busstationdata/sip_bus_station_flow_quarter_20161212.txt'
+        ];
+        
         stationGroup = group;
         cloneGroup = new THREE.Group();
+        domEvents = new THREEx.DomEvents(camera, renderer.domElement);
         exports.stationCamera = camera.clone();//new THREE.PerspectiveCamera( 40, camera.aspect, .1, 10000000 );
 
         var tot = stationsFlow.length;
@@ -89,6 +93,12 @@ var busStations = function( exports ){
                 meshUserData.spflow = _.drop(splitArray, 5);     
                 // meshUserData.baseH = height;
                 m.userData = meshUserData;
+
+                // domEvents.addEventListener(m, 'click', function(event){
+                //     var intersected = event.target;
+
+                //     stationOD.showStationOD(intersected.userData.sguid);
+                // }, false);
                  
 
                 // var yScale = initCount / baseH * 10;  

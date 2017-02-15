@@ -12,6 +12,8 @@ var weather = function( exports ){
             }
         });
 
+        particleGroup.material.needsUpdate = true;
+
         snowEmitter = new SPE.Emitter({
             maxAge: {
                 value: 16
@@ -86,9 +88,13 @@ var weather = function( exports ){
     exports.start = function(type){
         switch(type){
             case 'snow':
+                particleGroup.texture = loadTexture('./img/snowflake.png');
+                particleGroup.uniforms.texture.value = particleGroup.texture;
                 particleGroup.addEmitter( snowEmitter );
                 break;
             case 'rain':
+                particleGroup.texture = loadTexture('./img/raindrop2.png');
+                particleGroup.uniforms.texture.value = particleGroup.texture;
                 particleGroup.addEmitter( rainEmitter );
                 break;
         }

@@ -9,19 +9,24 @@ var taxis = function( exports ){
     var taxiCamera;
     var tg = new THREE.Vector3();
 
+    var gpsGroup;
+
     // var taxis = [
     //     '../../taxi/busgpsdata/20161212_100.txt'
     // ];
 
     var path = '../../taxi/busgpsdata/';
     var date = '20161212_';
-    var buslines = ['100', '1001', '106', '110', '111', '115', '116', '117', '120', '127', '128', '129', '130', '137', '138', '139', '141', '146', '148', '150', '156', '158', '16', '160', '162', '168', '170', '175', '176', '177', '179', '18', '180', '181', '182', '183', '185', '190', '2', '205', '206', '207', '208', '209', '215', '228', '238', '256', '258', '28', '307', '6', '高峰2号', '津梁街专线', '快线2号', '宋庄路专线', '斜塘专线', '重元寺专线'];
-
+    
     exports.init = function( group, camera ){
+        gpsGroup = group;
+
+        var buslines = ['100', '1001', '106', '111', '115', '116', '117', '127', '128', '129', '130', '137', '138', '139', '141', '148', '150', '156', '158', '16', '160', '162', '168', '170', '175', '176', '177', '179', '18', '180', '181', '182', '183', '185', '190', '2', '205', '206', '207', '208', '209', '215', '228', '238', '256', '258', '28', '高峰2号', '津梁街专线', '快线2号', '宋庄路专线', '斜塘专线', '重元寺专线', '307', '146', '110', '6', '120'];
 
         exports.taxiCamera = camera.clone();//new THREE.PerspectiveCamera( 40, camera.aspect, .1, 10000000 );
 
         var tot = buslines.length;
+        var busline;
         var taxi = new XMLHttpRequest();
         taxi.onload = function(e){
 
@@ -81,6 +86,7 @@ var taxis = function( exports ){
             } );
 
             var m = new THREE.Line( geom, taxiMaterial );
+            m.name = busline;
             group.add( m );
 
             taxiCurves.push(geom.vertices );
@@ -92,7 +98,8 @@ var taxis = function( exports ){
             //     taxi.open( "GET", taxis.shift() );
             //     taxi.send();
             if( buslines.length > 0 ){
-                var file = path + date + buslines.shift() + '.txt';
+                busline = buslines.shift();
+                var file = path + date + busline + '.txt';
                 taxi.open( "GET", file);
                 taxi.send();
             }else{
@@ -105,10 +112,40 @@ var taxis = function( exports ){
 
         //dingyh
         // taxi.open( "GET", taxis.shift() );
-        var file = path + date + buslines.shift() + '.txt';
+        busline = buslines.shift();
+        var file = path + date + busline + '.txt';
         taxi.open( "GET", file);
         taxi.send();
     };
+
+    exports.filter = function(busline){
+        _.forEach(gpsGroup.children, function(child){
+            if(child.name === busline){
+                child.visible = true;
+            } else {
+                child.visible = false;
+            }
+        })
+    }
+
+    exports.highlight = function(busline){
+        _.forEach(gpsGroup.children, function(child, i){
+            if(child.name === busline){
+                var material = taxiMaterials[i];
+
+                var col  = ~~( ( ( 58 - 58 ) / 58 ) *  60 );
+                material.color = new THREE.Color( "hsl("+ col +", 100%, 50%)" );
+                material.opacity = 0.05;
+                material.blending = THREE.AdditiveBlending;
+
+
+            } else {
+                var material = taxiMaterials[i];
+                material.color = new THREE.Color( "hsl(60, 100%, 50%)" );
+                material.opacity = 0.01;
+            }
+        })
+    }
 
     exports.nextTaxi = function(t){taxiCurveId++; taxiCurveId%=taxiCurves.length; };
     exports.updateTaxiCam = function(t){
