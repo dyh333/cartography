@@ -2,8 +2,9 @@ var stationOD = function( exports ){
 
 
     var curveArray=[];
-    var tweenArray =[];
+    var tween, tweenArray =[];
     var stationGroup, stationCamera;
+    var lineGroup, ballGroup;
     var tg = new THREE.Vector3();
 
     var levelH = 10; //水平基准高度
@@ -31,14 +32,28 @@ var stationOD = function( exports ){
         
         stationGroup = group;
         
-        var lineGroup = new THREE.Group();
+        lineGroup = new THREE.Group();
         lineGroup.name = 'lineGroup';
         stationGroup.add(lineGroup);
-        var ballGroup = new THREE.Group();
+        ballGroup = new THREE.Group();
         ballGroup.name = 'ballGroup';
         stationGroup.add(ballGroup);
         
-        var stationId = '008a902c-166e-bd5c-f18b-cf4d8526bb55';
+        
+    };
+
+    exports.showStationOD = function(stationId) {
+        if(tween !== undefined) {
+            tween.stop();
+            // TWEEN.remove(tween);
+
+            for (var i = lineGroup.children.length - 1; i >= 0; i--) {
+                lineGroup.remove(lineGroup.children[i]);
+            }
+            curveArray = [];
+        }
+
+        // var stationId = '008a902c-166e-bd5c-f18b-cf4d8526bb55';
         var stations_od = [
             '../../taxi/busstationdata/sip_bus_stations_od_20161212.txt'
         ];
@@ -102,33 +117,29 @@ var stationOD = function( exports ){
                             })
                             .repeat( Infinity )
                             // .start();
-                tweenArray.push(tween);
+                // tweenArray.push(tween);
 
                 tween.start();
 
 
                 //little ball
-                var blllGeo = new THREE.SphereGeometry(20);
-                var ballMaterial = new THREE.MeshBasicMaterial( {color: new THREE.Color( "hsl(8, 86%, 50%)" )} );
-                var sphere = new THREE.Mesh( blllGeo, ballMaterial );
-                sphere.position.set(xy_o[0], 10, xy_o[1]);
+                // var blllGeo = new THREE.SphereGeometry(20);
+                // var ballMaterial = new THREE.MeshBasicMaterial( {color: new THREE.Color( "hsl(8, 86%, 50%)" )} );
+                // var sphere = new THREE.Mesh( blllGeo, ballMaterial );
+                // sphere.position.set(xy_o[0], 10, xy_o[1]);
 
-                var meshUserData = new Object();
-                meshUserData.orgin = new THREE.Vector3( xy_o[0], 10, xy_o[1] );
-                meshUserData.destination = {x: [(xy_o[0] + xy_d[0])/2, xy_d[0]], y: [levelH+curveH, levelH], z: [(xy_o[1] + xy_d[1])/2, xy_d[1]]};  
-                sphere.userData = meshUserData;
+                // var meshUserData = new Object();
+                // meshUserData.orgin = new THREE.Vector3( xy_o[0], 10, xy_o[1] );
+                // meshUserData.destination = {x: [(xy_o[0] + xy_d[0])/2, xy_d[0]], y: [levelH+curveH, levelH], z: [(xy_o[1] + xy_d[1])/2, xy_d[1]]};  
+                // sphere.userData = meshUserData;
 
-                ballGroup.add( sphere );
+                // ballGroup.add( sphere );
  
             });           
         };
 
         station.open( "GET", stations_od.shift() );
         station.send();
-    };
-
-    exports.showStationOD = function(stationId) {
-        
     }
 
     exports.startTween = function(){

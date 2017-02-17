@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>园区公交运营监控平台</title>
     <style>
         head, body{
             width:100%;
@@ -45,6 +45,14 @@
             background-color: #007b2e; 
             font-weight: bold;
         }
+
+        .bar-selected {
+            background-color: #ff4c00 !important; 
+        }
+
+        .tool-selected {
+            background-color: #007b2e !important; 
+        }
     </style>
     <link rel="stylesheet" href="../../vendor/compiled/flipclock.css">
 </head>
@@ -77,7 +85,7 @@
             <span id="tab_gps" style="margin-top: 6px; margin-left: 20px; cursor: pointer; line-height:30px; display:inline-block; vertical-align: middle; text-align: center; color: white; width: 80px; height:30px; font-size: 14px;">运营轨迹</span>
             <span id="tab_flow" style="margin-top: 6px; margin-left: 10px; cursor: pointer; line-height:30px; display:inline-block; vertical-align: middle; text-align: center; color: white; width: 80px; height:30px; font-size: 14px;">站点客流</span>
         </div>
-        <div id="div_gps" >
+        <div id="div_gps" style="display: none;">
             <div style="position: relative; height: 105px;">
                 <div style="width: 50%; position: absolute; bottom:20px; border-right: 1px solid #696969;">
                     <div style="text-align:center;"><span style="color: white; font-size: 30px; font-family: Arial; font-weight: bold;">6945</span></div>
@@ -93,23 +101,23 @@
                 <span style="line-height:40px; color: white; font-size: 12px;">线路运营里程TOP5</span>
             </div>
             <div id="div_top_busline" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px; margin-top:14px;">
-                <div id="div_busline_120">
+                <div id="div_busline_120" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">120</span>
                     <span style="display:inline-block; height: 16px; width: 221.9px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;5547.714</span>
                 </div>  
-                <div id="div_busline_6">
+                <div id="div_busline_6" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">6</span>
                     <span style="display:inline-block; height: 16px; width: 220.5px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;5512.240</span>
                 </div>  
-                <div id="div_busline_110">
+                <div id="div_busline_110" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">110</span>
                     <span style="display:inline-block; height: 16px; width: 216.6px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;5414.057</span>
                 </div>  
-                <div id="div_busline_146">
+                <div id="div_busline_146" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">146</span>
                     <span style="display:inline-block; height: 16px; width: 192.5px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;4812.178</span>
                 </div> 
-                <div id="div_busline_307">
+                <div id="div_busline_307" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 30px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">307</span>
                     <span style="display:inline-block; height: 16px; width: 190.8px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;4769.127</span>
                 </div> 
@@ -144,6 +152,15 @@
                     <span style="display:inline-block; height: 16px; width: 170.68px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;379.294</span>
                 </div> 
             </div>
+
+            <div style="padding: 20px; border-bottom: 4px solid #007b2e">
+                <div>
+                    <span style="font-size: 12px; color: #8c8c8c;">数据来源：苏州工业园区公交公司</span>
+                </div>  
+                <div>
+                    <span style="font-size: 12px; color: #8c8c8c;">时间范围：2016/12/12 6:00-23:00</span>
+                </div> 
+            </div>
         </div>
 
         <div id="div_flow" style="display: none;">
@@ -167,27 +184,27 @@
                 <span style="line-height:40px; color: white; font-size: 12px;">站点客流TOP5</span>
             </div>
             <div id="div_top_busstation" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px; margin-top: 16px;">
-                <div id="div_busstation_e01d058c-05b7-44f9-8f28-4a8d01e5aea5">
+                <div id="div_busstation_e01d058c-05b7-44f9-8f28-4a8d01e5aea5" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">南</span>
                     <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">菁英公寓</span>
                     <span style="display:inline-block; height: 16px; width: 135.2px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1931</span>
                 </div>  
-                <div id="div_busstation_4722ab93-c31f-457f-880a-47c5abfe5ae6">
+                <div id="div_busstation_4722ab93-c31f-457f-880a-47c5abfe5ae6" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">西</span>
                     <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">钟南街首末站南</span>
                     <span style="display:inline-block; height: 16px; width: 129.7px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1853</span>
                 </div>  
-                <div id="div_busstation_8e03618f-c9a7-f5ee-bb6d-e077f85c9707">
+                <div id="div_busstation_8e03618f-c9a7-f5ee-bb6d-e077f85c9707" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">东</span>
                     <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">园区行政中心西</span>
                     <span style="display:inline-block; height: 16px; width: 116.4px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1663</span>
                 </div> 
-                <div id="div_busstation_2ea83a3b-4be4-0988-a95c-478eafa438c0">
+                <div id="div_busstation_2ea83a3b-4be4-0988-a95c-478eafa438c0" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">西</span>
                     <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">园区行政中心西</span>
                     <span style="display:inline-block; height: 16px; width: 99.7px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1424</span>
                 </div> 
-                <div id="div_busstation_24dd8f63-51d3-445e-8cc4-8787aeea5853">
+                <div id="div_busstation_24dd8f63-51d3-445e-8cc4-8787aeea5853" style="cursor: pointer;">
                     <span style="display:inline-block; height: 16px; width: 20px; text-align: center; font-size: 12px; color: white; background-color: #249e52;">东</span>
                     <span style="display:inline-block; height: 16px; width: 90px; text-align: left; font-size: 12px; color: white;">创意产业园</span>
                     <span style="display:inline-block; height: 16px; width: 94.7px; font-size: 12px; color: white; background-color: #696969;">&nbsp;&nbsp;1353</span>
@@ -201,16 +218,17 @@
                 <span style="line-height:40px; color: #8c8c8c; font-size: 12px;">环比客流上升</span>
             </div>
             
+            <div style="padding: 20px; border-bottom: 4px solid #007b2e">
+                <div>
+                    <span style="font-size: 12px; color: #8c8c8c;">数据来源：苏州工业园区公交公司</span>
+                </div>  
+                <div>
+                    <span style="font-size: 12px; color: #8c8c8c;">时间范围：2016/12/12 6:00-23:00</span>
+                </div> 
+            </div>
         </div>
 
-        <div style="padding: 20px; border-bottom: 5px solid #249e52">
-            <div>
-                <span style="font-size: 12px; color: #8c8c8c;">数据来源：苏州工业园区公交公司</span>
-            </div>  
-            <div>
-                <span style="font-size: 12px; color: #8c8c8c;">时间范围：2016/12/12 6:00-23:00</span>
-            </div> 
-        </div>
+        
 
         <div id="div_graphic" style="display: none; position: fixed; bottom: 30px; height:230px; width: 100%;">
             <div style="float: left; height: 100%; width: 300px; margin-right: 20px; background-color: rgb(0, 0, 0, 0.8);">
@@ -222,6 +240,18 @@
             </div>
             <div class="graph" style="float: left; height: 100%; background-color: rgb(0, 0, 0, 0.8);"></div>
         </div>
+    </div>
+
+    <div id="map_tool" style="position: absolute; top: 20px; right: 20px; width: 38px;">
+        <img id="btnReset" style="background-color: #3d3d3d; cursor: pointer; vertical-align: middle; margin-bottom: 6px;" src="img/maptool/mapTool_reset.png" />
+        <img id="btnZoomIn" style="background-color: #3d3d3d; cursor: pointer; vertical-align: middle; " src="img/maptool/mapTool_zoomIn.png" />
+        <img id="btnZoomOut" style="background-color: #3d3d3d; cursor: pointer; vertical-align: middle;" src="img/maptool/mapTool_zoomOut.png" />
+        <img id="btnTurnLeft" style="background-color: #3d3d3d; cursor: pointer; vertical-align: middle;" src="img/maptool/mapTool_turnLeft.png" />
+        <img id="btnTurnRight" style="background-color: #3d3d3d; cursor: pointer; vertical-align: middle;" src="img/maptool/mapTool_turnRight.png" />
+        <img id="btnRain" style="background-color: #3d3d3d; cursor: pointer; vertical-align: middle;" src="img/maptool/mapTool_rain.png" />
+        <img id="btnSnow" style="background-color: #3d3d3d; cursor: pointer; vertical-align: middle;" src="img/maptool/mapTool_snow.png" />
+
+        <img id="btnCompress" style="cursor: pointer; vertical-align: middle; margin-top: 6px;" src="img/maptool/mapTool_compass.png" />
     </div>
 
     <script src="../../vendor/light-map.js"></script>

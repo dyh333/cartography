@@ -36,7 +36,7 @@ var start = 0;
 var controls, skybox, light;
 
 window.onload = function() {
-    var isPaused = false;
+    var isPaused = true;
     var timer;
     var intervalDate = moment("2016-12-12 6:00", "YYYY-MM-DD HH:mm");
 
@@ -60,30 +60,40 @@ window.onload = function() {
     });
 
     $('#div_top_busline > div').click(function(){
-        var busline = _.last(_.split($(this)[0].id, '_'));
+        $("#div_top_busline > div > span.bar-selected").removeClass('bar-selected');
+        $(this).children("span:first").addClass('bar-selected');
         
-        var dateLineGps = '20161212_' + busline;
+        var busline = _.last(_.split($(this)[0].id, '_'));
+
+        // var dateLineGps = '20161212_' + busline;
 
         // taxis.filter(busline);
         taxis.highlight(busline);
     });
 
     $('#div_top_busstation > div').click(function(){
+        $("#div_top_busstation > div > span.bar-selected").removeClass('bar-selected');
+        $(this).children("span:first").addClass('bar-selected');
+
         var busstation = _.last(_.split($(this)[0].id, '_'));
         
-        console.log(busstation)
+        //TODO: show OD
+        // stationOD.init(busstation);
+        
+
+        stationOD.showStationOD(busstation);
     });
 
-    $('#btn_pause').click(function(){
-        isPaused = !isPaused;
-        
-        if(isPaused){
+    $('#btn_pause').click(function(){    
+        if(!isPaused){
             $('#btn_pause').text('播放');
         } else {
             $('#btn_pause').text('暂停');
 
             startAnimate();
         }
+
+        isPaused = !isPaused;
     });
 
     $('#btn_reset').click(function(){
@@ -95,6 +105,28 @@ window.onload = function() {
         graphic.resetBarChart();
 
         $('#btn_pause').text('播放');
+
+        intervalDate = moment("2016-12-12 6:00", "YYYY-MM-DD HH:mm");
+        $('#span_intervalTime').text(intervalDate.format("HH:mm"));
+    });
+
+    $('#btnRain').click(function(){
+        if($('#btnRain').hasClass('tool-selected')){
+            $('#btnRain').removeClass('tool-selected');
+            weather.stop('rain');
+        } else {
+            $('#btnRain').addClass('tool-selected');
+            weather.start('rain');
+        }
+    });
+    $('#btnSnow').click(function(){
+        if($('#btnSnow').hasClass('tool-selected')){
+            $('#btnSnow').removeClass('tool-selected');
+            weather.stop('snow');
+        } else {
+            $('#btnSnow').addClass('tool-selected');
+            weather.start('snow');
+        }
     });
 
     function showGps(){
@@ -190,7 +222,7 @@ window.onload = function() {
                     intervalDate = moment("2016-12-12 6:00", "YYYY-MM-DD HH:mm");
                 }
 
-                intervalDate = intervalDate.add('m', 30);
+                intervalDate = intervalDate.add('m', 15);
                 $('#span_intervalTime').text(intervalDate.format("HH:mm"));
                 
                 graphic.updateTimeline(currentFrame);
@@ -297,6 +329,13 @@ window.onload = function() {
         baseGroup.name = 'baseGroup';
         scene.add(baseGroup);
         builder.init( baseGroup );
+
+
+        var statODGroup = new THREE.Group();
+        statODGroup.name = 'statODGroup';
+        scene.add(statODGroup);
+        stationOD.init(statODGroup, camera);
+
         //dingyh
         // water.init( function(){
 
