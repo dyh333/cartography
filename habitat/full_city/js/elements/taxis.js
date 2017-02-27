@@ -147,6 +147,14 @@ var taxis = function( exports ){
         })
     }
 
+    exports.clearHighlight = function(busline){
+        _.forEach(gpsGroup.children, function(child, i){
+            var material = taxiMaterials[i];
+            material.color = new THREE.Color( "hsl(60, 100%, 50%)" );
+            material.opacity = 0.05;
+        })
+    }
+
     exports.nextTaxi = function(t){taxiCurveId++; taxiCurveId%=taxiCurves.length; };
     exports.updateTaxiCam = function(t){
 
@@ -187,7 +195,6 @@ var taxis = function( exports ){
             var col  = ~~( ( ( taxiMaterials.length - i ) / taxiMaterials.length ) *  60 );
             m.color = new THREE.Color( "hsl("+ col +", 100%, 50%)" );
             m.blending = THREE.AdditiveBlending;
-
         }) ;
     };
     return exports;

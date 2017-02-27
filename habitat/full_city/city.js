@@ -60,28 +60,37 @@ window.onload = function() {
     });
 
     $('#div_top_busline > div').click(function(){
+        var last_selected = $("#div_top_busline > div > span.bar-selected").parent().attr('id');
+
         $("#div_top_busline > div > span.bar-selected").removeClass('bar-selected');
-        $(this).children("span:first").addClass('bar-selected');
-        
-        var busline = _.last(_.split($(this)[0].id, '_'));
 
-        // var dateLineGps = '20161212_' + busline;
+        if(last_selected !== $(this).attr('id')){
+            $(this).children("span:first").addClass('bar-selected');
+            
+            var busline = _.last(_.split($(this)[0].id, '_'));
 
-        // taxis.filter(busline);
-        taxis.highlight(busline);
+            // taxis.filter(busline);
+            taxis.highlight(busline);
+        } else {
+
+            taxis.clearHighlight();
+        }
     });
 
     $('#div_top_busstation > div').click(function(){
+        var last_selected = $("#div_top_busstation > div > span.bar-selected").parent().attr('id');
+
         $("#div_top_busstation > div > span.bar-selected").removeClass('bar-selected');
-        $(this).children("span:first").addClass('bar-selected');
 
-        var busstation = _.last(_.split($(this)[0].id, '_'));
-        
-        //TODO: show OD
-        // stationOD.init(busstation);
-        
+        if(last_selected !== $(this).attr('id')){
+            $(this).children("span:first").addClass('bar-selected');
 
-        stationOD.showStationOD(busstation);
+            var busstation = _.last(_.split($(this)[0].id, '_'));
+
+            stationOD.showStationOD(busstation);
+        } else {
+            stationOD.clearStationOD();
+        }
     });
 
     $('#btn_pause').click(function(){    
@@ -110,6 +119,22 @@ window.onload = function() {
         $('#span_intervalTime').text(intervalDate.format("HH:mm"));
     });
 
+    $('#btnCameraReset').click(function(){
+        
+        var xy = map.mercator.latLonToMeters( -lat, lng, map.zoom);
+
+        camera.position.x = xy[0];
+        camera.position.y = 20128.206178611854;
+        camera.position.z = xy[1];
+
+        controls.target.x = xy[0];
+        // controls.target.y = xy[0];
+        controls.target.z = xy[1];
+        camera.lookAt( controls.target );
+
+        camera.rotation.z = 0;
+    });
+
     $('#btnRain').click(function(){
         if($('#btnRain').hasClass('tool-selected')){
             $('#btnRain').removeClass('tool-selected');
@@ -120,6 +145,8 @@ window.onload = function() {
         }
     });
     $('#btnSnow').click(function(){
+        console.log(camera.position);
+
         if($('#btnSnow').hasClass('tool-selected')){
             $('#btnSnow').removeClass('tool-selected');
             weather.stop('snow');
@@ -286,9 +313,12 @@ window.onload = function() {
     camera.position.z = xy[1];
 
     controls.target.x = xy[0];
-    // controls.target.y = 0;
+    // controls.target.y = xy[0];
     controls.target.z = xy[1];
     camera.lookAt( controls.target );
+
+    camera.rotation.z = 0;
+
 
     var size = 2048;
 
@@ -478,21 +508,21 @@ document.body.addEventListener("keyup", function(e) {
     if(e.keyCode == 67 ) {
         dark();
     }
-    if(e.keyCode == 68 ) {
+    // if(e.keyCode == 68 ) {
 
-        if( !dinoLoaded ){
+    //     if( !dinoLoaded ){
 
-            var lat = 37.773972;
-            var lng = -122.431297;
-            var xy = map.mercator.latLonToMeters( -lat, lng, 13 );
-            dino.init( scene, camera, xy, skybox.cubeMap );
-            camera.position.set( -13630543.622608025, 100, -4545743.068301543 );
-            controls.target.set( -13627973.806908408, 1040.3513288190197, -4547575.779487265 );
-            controls.update();
+    //         var lat = 37.773972;
+    //         var lng = -122.431297;
+    //         var xy = map.mercator.latLonToMeters( -lat, lng, 13 );
+    //         dino.init( scene, camera, xy, skybox.cubeMap );
+    //         camera.position.set( -13630543.622608025, 100, -4545743.068301543 );
+    //         controls.target.set( -13627973.806908408, 1040.3513288190197, -4547575.779487265 );
+    //         controls.update();
 
-            dinoLoaded = true;
-        }
-    }
+    //         dinoLoaded = true;
+    //     }
+    // }
     if(e.keyCode == 32 ){
         camera.position.copy( coolspots[ coolSpotId ][0] );
         controls.target.copy( coolspots[ coolSpotId ][1] );

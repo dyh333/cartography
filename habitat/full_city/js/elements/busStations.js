@@ -223,7 +223,19 @@ var busStations = function( exports ){
             tween2.delay(1000).start();
 
             var tween3 = new TWEEN.Tween(ele.position).to({ y: levelH + (yScale)/2 }, 1000)
-            tween3.delay(1000).start();
+            tween3.delay(1000).onComplete(function(){
+                if(accumulateVal>100 && accumulateVal<= 300){
+                    ele.material.color = new THREE.Color( "hsl(50, 100%, 50%)" );
+                } else if(accumulateVal>300 && accumulateVal<= 500){
+                    ele.material.color = new THREE.Color( "hsl(40, 100%, 50%)" );
+                } else if(accumulateVal>500 && accumulateVal<= 700){
+                    ele.material.color = new THREE.Color( "hsl(30, 100%, 50%)" );
+                } else if(accumulateVal>700 && accumulateVal<= 900){
+                    ele.material.color = new THREE.Color( "hsl(20, 100%, 50%)" );
+                }else if(accumulateVal>900){
+                    ele.material.color = new THREE.Color( "hsl(10, 100%, 50%)" );
+                } 
+            }).start();
         });
     }
 

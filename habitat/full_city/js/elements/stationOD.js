@@ -42,7 +42,7 @@ var stationOD = function( exports ){
         
     };
 
-    exports.showStationOD = function(stationId) {
+    exports.clearStationOD = function(){
         if(tween !== undefined) {
             tween.stop();
             // TWEEN.remove(tween);
@@ -52,6 +52,10 @@ var stationOD = function( exports ){
             }
             curveArray = [];
         }
+    }
+
+    exports.showStationOD = function(stationId) {
+        exports.clearStationOD();
 
         // var stationId = '008a902c-166e-bd5c-f18b-cf4d8526bb55';
         var stations_od = [
@@ -74,6 +78,29 @@ var stationOD = function( exports ){
                 var ll_d = [parseFloat(splitArray[4]), parseFloat(splitArray[5])];
                 var xy_d = map.mercator.latLonToMeters( -ll_d[0], ll_d[1], map.zoom);
 
+                var count = parseFloat(splitArray[6]);
+                var color;
+                var opacity;
+                if(count>0 && count <=10){
+                    color = 60;
+                    opacity = 0.3;
+                } else if(count>10 && count <=30){
+                    color = 50;
+                    opacity = 0.6;
+                } else if(count>30 && count <=50){
+                    color = 40;
+                    opacity = 0.8;
+                } else if(count>50 && count <=100){
+                    color = 30;
+                    opacity = 0.8;
+                } else if(count>100 && count <=150){
+                    color = 20;
+                    opacity = 0.8;
+                } else if(count>150){
+                    color = 10;
+                    opacity = 0.8;
+                } 
+
                 var curve = new THREE.CatmullRomCurve3([
                     new THREE.Vector3( xy_o[0], 10, xy_o[1] ),
                     new THREE.Vector3( (xy_o[0] + xy_d[0])/2, levelH+curveH, (xy_o[1] + xy_d[1])/2 ),
@@ -88,9 +115,11 @@ var stationOD = function( exports ){
                 
                 
                 var material = new THREE.LineBasicMaterial( { 
-                    color: new THREE.Color( "hsl(60, 100%, 50%)" ), 
-                    opacity: 1, 
-                    linewidth: 1 
+                    color: new THREE.Color( "hsl("+color+", 100%, 50%)" ), 
+                    opacity: opacity, 
+                    transparent: true,
+                    linewidth: 1,
+                    blending: THREE.AdditiveBlending
                     // , vertexColors: THREE.VertexColors 
                 } );
                
